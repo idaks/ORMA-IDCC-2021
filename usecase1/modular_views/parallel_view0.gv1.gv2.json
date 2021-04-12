@@ -1,0 +1,36 @@
+[
+    {
+        "op": "core/column-move",
+        "columnName": "physical_description",
+        "index": 5,
+        "description": "Move column physical_description to position 5",
+        "id": 1618169146605,
+        "time": "2021-04-11T19:13:04Z",
+        "schema": [
+            "id",
+            "name",
+            "sponsor",
+            "event",
+            "venue",
+            "physical_description",
+            "place",
+            "occasion",
+            "notes",
+            "call_number",
+            "keywords",
+            "language",
+            "repaired_date",
+            "date",
+            "year",
+            "month",
+            "day",
+            "location",
+            "location_type",
+            "currency",
+            "currency_symbol",
+            "status",
+            "page_count",
+            "dish_count"
+        ]
+    }
+]

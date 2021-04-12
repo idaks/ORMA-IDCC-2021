@@ -1,0 +1,19 @@
+digraph ORMA {
+	node [fillcolor="#FFFFCC" shape=box style="rounded,filled"]
+	"event.v0" [label=event]
+	"event.v1" [label=event]
+	"event.v1" [label=event]
+	"event.v2" [label=event]
+	node [fillcolor="#CCFFCC" fontname=Helvetica peripheries=1 shape=box style=filled]
+	"(1) mass-edit"
+	node [fillcolor="#CCFFCC" fontname=Helvetica peripheries=1 shape=box style=filled]
+	"(2) .toUppercase()"
+	"event.v0" [label=event fillcolor="#FFFFCC"]
+	"event.v1" [label=event fillcolor="#faa7a7"]
+	"event.v1" [label=event fillcolor="#faa7a7"]
+	"event.v2" [label=event fillcolor="#f2ae41"]
+	"event.v0" -> "(1) mass-edit"
+	"(1) mass-edit" -> "event.v1"
+	"event.v1" -> "(2) .toUppercase()"
+	"(2) .toUppercase()" -> "event.v2"
+}
