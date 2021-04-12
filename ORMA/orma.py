@@ -11,8 +11,8 @@ level 3: both change dependency and content
 import argparse
 import json
 
-from extra_info import generate_recipe as gen_recipe
-# from .extra_info import generate_recipe as gen_recipe
+# from extra_info import generate_recipe as gen_recipe
+from .extra_info import generate_recipe as gen_recipe
 # import all library needed for this class
 import re
 from collections import Counter
@@ -179,7 +179,7 @@ def merge_basename(operator):
         return result
 
 
-# TASK 1: Create a parallel view of data cleaning workflow
+# TASK 1: Create a modular_views of data cleaning workflow
 # column-dependency view
 def translate_operator_json_to_graph(json_data, schemas):
     # json_data, schema_info = gen_recipe(project_id)
@@ -936,7 +936,7 @@ def model_schema_evolution(project_id, output_gv):
     schema_graph.view()
 
 
-# TASK 3: Create a table view of data cleaing workflow
+# TASK 3: Create a table_view of data cleaing workflow
 def table_view(project_id):
     json_data, schema_info = gen_recipe(project_id)
     table_view_data = []
@@ -1202,14 +1202,14 @@ def generate_table_dot(project_id=2124203262743, output='output/table_view.gv'):
     return tableview_dot
 
 
-def main1():
+def parallel_view_main(project_id, output_gv):
     '''Run parallel view'''
     # input project_id to gen()
-    project_id = 2124203262743
+    # project_id = 2124203262743
 
     # TODO
     # facet edge rendering
-    output_gv = 'output/parallel_view.gv'
+    # output_gv = 'output/parallel_view.gv'
     json_data, schema_info = gen_recipe(project_id)
     schemas = get_schema_list(schema_info)
     orma_g = generate_dot(json_data, schemas, output_gv)
@@ -1218,10 +1218,10 @@ def main1():
 
 def main():
     FUNCTION_MAP = {
-        'parallel_view': generate_dot,
-        'summary_view': model_schema_evolution,
+        'parallel_view': parallel_view_main,
+        'schema_view': model_schema_evolution,
         'table_view': generate_table_dot,
-        'Clusters_Parallel_View': split_recipe
+        'modular_views': split_recipe
     }
 
     parser = argparse.ArgumentParser(description='OpenRefine Model Analysis')
@@ -1317,7 +1317,7 @@ def find_subworkflows(project_id):
     return path, json_data, schemas
 
 
-def split_recipe(project_id=2124203262743):
+def split_recipe(project_id=2124203262743, output_gv='modular_views/parallel_view'):
     path, json_data, schemas = find_subworkflows(project_id)
     # json_data, schema_info = gen_recipe(project_id)
     # for ops in json_data:
@@ -1352,9 +1352,9 @@ def split_recipe(project_id=2124203262743):
                 json_res.append(operators[index])
                 cluster_schemas.append(schemas[index])
         if json_res:
-            with open(f'parallel_views/parallel_view{counter}.json', 'w')as f:
+            with open(f'{output_gv}{counter}.json', 'w')as f:
                 json.dump(json_res, f, indent=4)
-            output_gv = f'parallel_views/output/parallel_view{counter}.gv'
+            output_gv = f'{output_gv}{counter}.gv'
             orma_g = generate_dot(json_res, cluster_schemas, output_gv)
             orma_g.view()
             counter += 1
@@ -1364,8 +1364,8 @@ def split_recipe(project_id=2124203262743):
 
 if __name__ == '__main__':
     # split_recipe()
-    generate_table_dot() # table view
+    generate_table_dot() # table_view
     # model_schema_evolution(project_id=2124203262743, output_gv='output/schema_view.gv') # summary view
-    # main1()  # parallel view
+    # main1()  # modular_views
     # main()
     # temp(2124203262743)
