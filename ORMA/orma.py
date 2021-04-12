@@ -20,17 +20,16 @@ from pprint import pprint
 
 from graphviz import Digraph
 
-
 _color_ = '#FFFFCC'  # default color for output node
 _inNodeColor_ = '#FAFAF0'  # default color for input node
 _process_color_ = '#CCFFCC'
 # _level3_color_ = '#ffc04d'  # if the transformation is column-level
 # _level0_color = '#D0D0D0'  # if the transformation is single-edit/ star row
 _edge_color_ = '#000000'  # default edge color: black
-_gen_val_color_ = '#f2ae41'  # generic + value changed
-_type_con_color_ = '#d4faf7'  # type convert color
-_type_label_color_ = '#01756c'  # type convert label color
-_custome_v_color = '#faa7a7'  # customized value color
+_gen_val_color_ = '#f7ce8d'  # generic + value changed
+_type_con_color_ = '#d4eafa'  # type convert color
+_type_label_color_ = '#14697e'  # type convert label color
+_custome_v_color = '#fbb8b8'  # customized value color
 _gen_label_color_ = '#b06e04'  # generic + value label color
 _remove_color_ = '#D0D0D0'  # color for removing cells
 
@@ -157,26 +156,47 @@ def merge_basename(operator):
     #  normal one: "grel:value"
     exp = operator['expression']
     res = operator['baseColumnName']
-    if exp == 'grel:value':
-        #      missing information here: if no merge other columns, we still do not know if the new column is set
-        # --------dependency as basecolumnName
-        result = res
-        # print('value: {}'.format(result))
-        return result
-    result = re.findall('\.\w+\.', exp)
-    if result:
-        newm = []
-        for col in result:
-            newm.append(col[1:len(col) - 1])
-        result = newm
-        return result
+    # if exp == 'grel:value':
+    #     #      missing information here: if no merge other columns, we still do not know if the new column is set
+    #     # --------dependency as basecolumnName
+    #     result = res
+    #     # print('value: {}'.format(result))
+    #     return result
+    if 'grel:if' in exp:
+        try:
+            exp = exp.split('grel:if')[-1].split('(')[-1].split(',')
+            input_cols = []
+            for pieces in exp:
+                if re.findall('\.\w+\.', pieces):
+                    result = re.findall('\.\w+\.', pieces)
+                    for col in result:
+                        input_cols.append(col[1:len(col) - 1])
+                elif re.findall('[A-Z]\w+ \d', pieces):
+                    result = re.findall('[A-Z]\w+ \d', pieces)
+                    for col in result:
+                        input_cols.append(col)
+                else:
+                    input_cols.append(res)
+            return list(set(input_cols))
+        except:
+            return res
     else:
-        result = re.findall('[A-Z]\w+ \d', exp)
-        newm = []
-        for col in result:
-            newm.append(col)
-        result = newm
-        return result
+        if re.findall('\.\w+\.', exp):
+            result = re.findall('\.\w+\.', exp)
+            newm = []
+            for col in result:
+                newm.append(col[1:len(col) - 1])
+            result = newm
+            return result
+        elif re.findall('[A-Z]\w+ \d', exp):
+            result = re.findall('[A-Z]\w+ \d', exp)
+            newm = []
+            for col in result:
+                newm.append(col)
+            result = newm
+            return result
+        else:
+            return res
 
 
 # TASK 1: Create a modular_views of data cleaning workflow
@@ -357,29 +377,41 @@ def translate_operator_json_to_graph(json_data, schemas):
 
             else:  # normal unary operation
                 try:
-                    expression = operator['expression']
-                    exp_preprocess = expression.split(".")[0]
                     column_name = operator['columnName']
-                    if exp_preprocess == 'value':
-                        graph.process = [f'({i}) .{expression.split(".")[-1]}']
-                        if expression == 'value.toDate()':
-                            graph.in_node_names += [
-                                {'col_name': column_name, 'label': f'{get_column_current_node(column_name)}'}
-                            ]
-                            graph.out_node_names += [
-                                {'col_name': column_name, 'label': f'{create_new_node_of_column(column_name)}',
-                                 'color': _type_con_color_}
-                            ]
-                        elif expression == 'value.toNumber()':
-                            graph.in_node_names += [
-                                {'col_name': column_name, 'label': f'{get_column_current_node(column_name)}'}
-                            ]
-                            graph.out_node_names += [
-                                {'col_name': column_name, 'label': f'{create_new_node_of_column(column_name)}',
-                                 'color': _type_con_color_}
-                            ]
-                        else:
+                    if 'expression' in operator:
+                        expression = operator['expression']
+                        exp_preprocess = expression.split(".")[0]
+                        if exp_preprocess == 'value':
+                            graph.process = [f'({i}) .{expression.split(".")[-1]}']
+                            if expression == 'value.toDate()':
+                                graph.in_node_names += [
+                                    {'col_name': column_name, 'label': f'{get_column_current_node(column_name)}'}
+                                ]
+                                graph.out_node_names += [
+                                    {'col_name': column_name, 'label': f'{create_new_node_of_column(column_name)}',
+                                     'color': _type_con_color_}
+                                ]
+                            elif expression == 'value.toNumber()':
+                                graph.in_node_names += [
+                                    {'col_name': column_name, 'label': f'{get_column_current_node(column_name)}'}
+                                ]
+                                graph.out_node_names += [
+                                    {'col_name': column_name, 'label': f'{create_new_node_of_column(column_name)}',
+                                     'color': _type_con_color_}
+                                ]
+                            else:
 
+                                graph.in_node_names += [
+                                    {'col_name': column_name, 'label': f'{get_column_current_node(column_name)}'}
+                                ]
+                                graph.out_node_names += [
+                                    {'col_name': column_name, 'label': f'{create_new_node_of_column(column_name)}',
+                                     'color': _gen_val_color_}
+                                ]
+                        else:
+                            # value change
+                            exp = expression.split(':')[-1]
+                            graph.process = [f'({i}) {exp}']
                             graph.in_node_names += [
                                 {'col_name': column_name, 'label': f'{get_column_current_node(column_name)}'}
                             ]
@@ -388,9 +420,8 @@ def translate_operator_json_to_graph(json_data, schemas):
                                  'color': _gen_val_color_}
                             ]
                     else:
-                        # value change
-                        exp = expression.split(':')[-1]
-                        graph.process = [f'({i}) {exp}']
+                        opname = operator['op'].split('/')[-1]
+                        graph.process = [f'({i}) {opname}']
                         graph.in_node_names += [
                             {'col_name': column_name, 'label': f'{get_column_current_node(column_name)}'}
                         ]
@@ -398,7 +429,7 @@ def translate_operator_json_to_graph(json_data, schemas):
                             {'col_name': column_name, 'label': f'{create_new_node_of_column(column_name)}',
                              'color': _gen_val_color_}
                         ]
-
+                        pass
                 except KeyError:
                     continue
         else:
@@ -640,8 +671,16 @@ def schema_analysis(recipe, schema_info):
                 edges.append([edge_from, edge_to])
 
             elif operator['op'] == 'core/column-removal':
-                edge_from = {f'schema{i - 1}': operator['columnName']}
-                edge_to = {f'schema{i}': f"remove-{operator['columnName']}", 'color': _remove_color_}
+                edge_from = {f'schema{i - 1}': operator['columnName'], 'label': ' column-removal',
+                             'style': 'dashed', 'edge_color': _gen_label_color_}
+                prev_schema = schema_info[i - 1]
+                old_idx = prev_schema.index(operator['columnName'])
+                prev_idx = old_idx-1
+                edge_to = {f'schema{i}': f"{prev_schema[prev_idx]}",
+                           'color': _remove_color_,
+                           }
+                # edge_to 'label': edge_label, 'style': 'dashed',
+                #                              'edge_color': '#000000'}
                 edges.append([edge_from, edge_to])
 
             elif operator['op'] == 'core/column-addition-by-fetching-urls':
@@ -650,10 +689,21 @@ def schema_analysis(recipe, schema_info):
                 edges.append([edge_from, edge_to])
 
             elif operator['op'] == 'core/multivalued-cell-join':
-                pass
+                edge_from = {f'schema{i - 1}': operator['columnName']}
+                edge_to = {f'schema{i}': f"{operator['columnName']}", 'color': _gen_val_color_}
+                edges.append([edge_from, edge_to])
 
             elif operator['op'] == 'core/transpose-columns-into-rows':
-                pass
+                new_cols = [operator['keyColumnName'], operator['valueColumnName']]
+                for index, new_col in enumerate(new_cols):
+                    if index == 0:
+                        edge_from = {f'schema{i - 1}': operator['startColumnName'],
+                                     'label': ' ', 'edge_color': _gen_label_color_}
+                    else:
+                        edge_from = {f'schema{i - 1}': operator['startColumnName'],
+                                     'label': ' transpose-columns-into-rows', 'edge_color': _gen_label_color_}
+                    edge_to = {f'schema{i}': f"{new_col}", 'color': _gen_val_color_}
+                    edges.append([edge_from, edge_to])
 
             elif operator['op'] == 'core/row-removal':
                 edge_from = {f'schema{i - 1}': operator['engineConfig']['facets'][0]['name']}
@@ -706,29 +756,40 @@ def schema_analysis(recipe, schema_info):
                 edge_to = {f'schema{i}': operator['columnName'], 'color': _custome_v_color}
                 edges.append([edge_from, edge_to])
             else:  # normal unary operation
-                expression = operator['expression']
-                exp_preprocess = expression.split(".")[0]
-                if exp_preprocess == 'value':
-                    label = f' .{expression.split(".")[-1]}'
-                    if expression == 'value.toDate()':
-                        # schema change
-                        edge_color = _type_label_color_
-                        edge_to = {f'schema{i}': operator['columnName'], 'color': _type_con_color_}
-                    elif expression == 'value.toNumber()':
-                        # schema change
-                        edge_color = _type_label_color_
-                        edge_to = {f'schema{i}': operator['columnName'], 'color': _type_con_color_}
-                    else:
-                        edge_color = _gen_label_color_
-                        edge_to = {f'schema{i}': operator['columnName'], 'color': _gen_val_color_}
+                try:
+                    column_name = operator['columnName']
+                    if 'expression' in operator:
+                        expression = operator['expression']
+                        exp_preprocess = expression.split(".")[0]
+                        if exp_preprocess == 'value':
+                            label = f' .{expression.split(".")[-1]}'
+                            if expression == 'value.toDate()':
+                                # schema change
+                                edge_color = _type_label_color_
+                                edge_to = {f'schema{i}': operator['columnName'], 'color': _type_con_color_}
+                            elif expression == 'value.toNumber()':
+                                # schema change
+                                edge_color = _type_label_color_
+                                edge_to = {f'schema{i}': operator['columnName'], 'color': _type_con_color_}
+                            else:
+                                edge_color = _gen_label_color_
+                                edge_to = {f'schema{i}': operator['columnName'], 'color': _gen_val_color_}
 
-                else:
-                    # value change
-                    label = f' {expression}'
-                    edge_color = _gen_label_color_
-                    edge_to = {f'schema{i}': operator['columnName'], 'color': _gen_val_color_}
-                edge_from = {f'schema{i - 1}': operator['columnName'], 'label': label, 'edge_color': edge_color}
-                edges.append([edge_from, edge_to])
+                        else:
+                            # value change
+                            label = f' {expression}'
+                            edge_color = _gen_label_color_
+                            edge_to = {f'schema{i}': operator['columnName'], 'color': _gen_val_color_}
+                        edge_from = {f'schema{i - 1}': operator['columnName'], 'label': label, 'edge_color': edge_color}
+                        edges.append([edge_from, edge_to])
+                    else:
+                        label = operator['op'].split('/')
+                        edge_from = {f'schema{i - 1}': column_name, 'label': f' {label}',
+                                     'edge_color': _gen_label_color_}
+                        edge_to = {f'schema{i}': column_name, 'color': _gen_val_color_}
+                        edges.append([edge_from, edge_to])
+                except KeyError:
+                    continue
         else:
             prev_schema = schema_info[i - 1]
             cur_schema = schema_info[i]
@@ -996,9 +1057,9 @@ def table_view(project_id):
                 ]
 
             elif operator['op'] == 'core/column-removal':
-                colname = f'col-name "{operator["engineConfig"]["facets"][0]["columnName"]}"'
-                expression = f'expression "{operator["engineConfig"]["facets"][0]["expression"].split(":")[-1]}"'
-                graph.process = [f'({i}) column removal']
+                colname = f'col-name "{operator["columnName"]}"'
+                # expression = f'expression "{operator["engineConfig"]["facets"][0]["expression"].split(":")[-1]}"'
+                graph.process = [f'({i}) column-removal']
 
                 graph.in_node_names += [
                     prev_table,
@@ -1098,6 +1159,24 @@ def table_view(project_id):
                 graph.out_node_names += [
                     cur_table
                 ]
+            elif operator['op'] == 'core/multivalued-cell-split':
+                colname = operator['columnName']
+                keyColumnName = operator['keyColumnName']
+                mode = operator['separator']
+                separator =f'"{operator["separator"]}"'
+                regex = operator['regex']
+                graph.process = [f'({i}) multivalued-cell-split']
+                graph.in_node_names += [
+                    prev_table,
+                    # colname,
+                    # keyColumnName,
+                    # mode,
+                    # separator,
+                    # regex
+                ]
+                graph.out_node_names += [
+                    cur_table
+                ]
 
             else:  # normal unary operation
                 try:
@@ -1119,7 +1198,14 @@ def table_view(project_id):
                     ]
 
                 except KeyError:
-                    continue
+                    graph.process = [f'({i}) {operator["op"].split("/")[-1]}']
+                    graph.in_node_names += [
+                        prev_table,
+                        # colname,
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
             # graph.edge += [{'from': graph.in_node_names, 'to': graph.process},
             #                {'from': graph.process, 'to': graph.out_node_names}]
             # table_view_data.append(graph)
@@ -1263,30 +1349,54 @@ def dfs(graph, u):
 def write_linked_dep(edges):
     # this will return dictionary: {node: [dependent nodes]}
     # we only care the nodes with different name but linked together
-    graph = {}
+    neighbors_of = {}
+    nodes = set()
     for edge in edges:
         u = edge['from']
         len_u = len(u)
         v = edge['to']
         len_v = len(v)
         if len_u == 1 and len_v == 1:
-            if u[0]['col_name'] != v[0]['col_name']:
-                graph.setdefault(u[0]['col_name'], []).append(v[0]['col_name'])
-                graph.setdefault(v[0]['col_name'], [])
+            u = u[0]['col_name']
+            v = v[0]['col_name']
+            nodes.add(u)
+            nodes.add(v)
+            # if u != v:
+                # Add edge u->v and u->v
+            neighbors_of.setdefault(u, []).append(v)
+            neighbors_of.setdefault(v, []).append(u)
+
         elif len_v > 1:
+            u = u[0]['col_name']
+            nodes.add(u)
             for output in v:
-                if output['col_name'] != u[0]['col_name']:
-                    graph.setdefault(u[0]['col_name'], []).append(output['col_name'])
-                    graph.setdefault(output['col_name'], [])
+                nodes.add(output['col_name'])
+                # if output['col_name'] != u:
+                neighbors_of.setdefault(u, []).append(output['col_name'])
+                neighbors_of.setdefault(output['col_name'], []).append(u)
         elif len_u > 1:
-            for input in u:
-                if input['col_name'] != v[0]['col_name']:
-                    graph.setdefault(input['col_name'], []).append(v[0]['col_name'])
-                    graph.setdefault(v[0]['col_name'], [])
-    return graph
+            v = v[0]['col_name']
+            nodes.add(v)
+            for input_node in u:
+                nodes.add(input_node['col_name'])
+                # if input_node['col_name'] != v:
+                neighbors_of.setdefault(input_node['col_name'], []).append(v)
+                neighbors_of.setdefault(v, []).append(input_node['col_name'])
+    return neighbors_of, nodes
 
 
-def find_subworkflows(project_id):
+def find_component(neighbors_of, u, component=None):
+    if component is None:
+        component = {u}
+    for v in neighbors_of[u]:
+        if v in component:
+            continue
+        component.add(v)
+        find_component(neighbors_of, v, component)
+    return component
+
+
+def cluster_main(project_id):
     json_data, schema_info = gen_recipe(project_id)
     schemas = get_schema_list(schema_info)
     orma_data = translate_operator_json_to_graph(json_data, schemas)
@@ -1294,54 +1404,46 @@ def find_subworkflows(project_id):
     for graph in orma_data:
         new_edges += [{'from': graph.in_node_names, 'to': graph.out_node_names}]
 
-    graph = write_linked_dep(new_edges)
+    neighbors_of, nodes = write_linked_dep(new_edges)
+    components = []
+    visited_nodes = set()
+    for u in nodes:
+        if u in visited_nodes:
+            continue
+        component = find_component(neighbors_of, u)
+        components.append(component)
+        visited_nodes |= component
+    del visited_nodes
+
+    return components
+
+
+def split_recipe(project_id=2124203262743, output_gv='../usecase2/modular_views/modular_views/parallel_view'):
+    # how to define subworkflow:
+    # same input or same output
+    components = cluster_main(project_id)
+
     json_data, schema_info = gen_recipe(project_id)
-    schema_init = schema_info[0]['schema']
-
-    record_start = []  # record starting nodes
-    for i, op in enumerate(json_data):
-        for k, v in op.items():
-            if v in schema_init:
-                record_start.append(v)
-    starting_nodes = list(set(record_start))
-
-    path = dict.fromkeys(starting_nodes)
-    # DFS get all the paths from starting_nodes:
-    for starting_node in starting_nodes:
-        visited_node = dfs(graph, starting_node)
-        if visited_node:
-            path[starting_node] = visited_node
-        else:
-            pass
-
-    return path, json_data, schemas
-
-
-def split_recipe(project_id=2124203262743, output_gv='modular_views/parallel_view'):
-    path, json_data, schemas = find_subworkflows(project_id)
-    # json_data, schema_info = gen_recipe(project_id)
-    # for ops in json_data:
-    #     pprint(ops)
+    schemas = get_schema_list(schema_info)
     orma_data = translate_operator_json_to_graph(json_data, schemas)
 
     clusters = []
-    for key, value in path.items():
-        path_nodes = set(value)
+    for component in components:
         cluster = []
         for i, graph in enumerate(orma_data):
             in_nodes = []
             for in_node in graph.in_node_names:
                 in_nodes.append(in_node['col_name'])
             in_nodes_set = set(in_nodes)
-            common_flag = in_nodes_set.intersection(path_nodes)
+            common_flag = in_nodes_set.intersection(set(component))
             if common_flag:
                 cluster.append(i)
             else:
                 pass
         clusters.append(cluster)
 
-    counter = 0
     operators = [graph.raw_operator for graph in orma_data]
+    counter = 0
     for cluster_list in clusters:
         json_res = []
         cluster_schemas = []
@@ -1352,10 +1454,10 @@ def split_recipe(project_id=2124203262743, output_gv='modular_views/parallel_vie
                 json_res.append(operators[index])
                 cluster_schemas.append(schemas[index])
         if json_res:
-            with open(f'{output_gv}{counter}.json', 'w')as f:
+            with open(f'{output_gv}_{counter}.json', 'w')as f:
                 json.dump(json_res, f, indent=4)
-            output_gv = f'{output_gv}{counter}.gv'
-            orma_g = generate_dot(json_res, cluster_schemas, output_gv)
+            # output_gv = f'{output_gv}_{counter}'
+            orma_g = generate_dot(json_res, cluster_schemas, f'{output_gv}_{counter}')
             orma_g.view()
             counter += 1
         else:
@@ -1363,8 +1465,10 @@ def split_recipe(project_id=2124203262743, output_gv='modular_views/parallel_vie
 
 
 if __name__ == '__main__':
+    split_recipe(project_id=2494992270641)
+    # cluster_main(project_id=2494992270641)
     # split_recipe()
-    generate_table_dot() # table_view
+    # generate_table_dot()  # table_view
     # model_schema_evolution(project_id=2124203262743, output_gv='output/schema_view.gv') # summary view
     # main1()  # modular_views
     # main()
