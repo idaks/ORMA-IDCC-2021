@@ -1,0 +1,38 @@
+digraph ORMA {
+	node [fillcolor="#FFFFCC" shape=box style="rounded,filled"]
+	"number_of_reviews.v0" [label=number_of_reviews]
+	"number_of_reviews.v1" [label=number_of_reviews]
+	"number_of_reviews.v1" [label=number_of_reviews]
+	"reviews_representation.v0" [label=reviews_representation]
+	"availability_365.v0" [label=availability_365]
+	"availability_365.v1" [label=availability_365]
+	"availability_365.v1" [label=availability_365]
+	"reviews_representation.v0" [label=reviews_representation]
+	"comment_hotel.v0" [label=comment_hotel]
+	node [fillcolor="#CCFFCC" fontname=Helvetica peripheries=1 shape=box style=filled]
+	"(1) .toNumber()"
+	node [fillcolor="#CCFFCC" fontname=Helvetica peripheries=1 shape=box style=filled]
+	"(2) column-addition"
+	node [fillcolor="#CCFFCC" fontname=Helvetica peripheries=1 shape=box style=filled]
+	"(3) .toNumber()"
+	node [fillcolor="#CCFFCC" fontname=Helvetica peripheries=1 shape=box style=filled]
+	"(4) column-addition"
+	"number_of_reviews.v0" [label=number_of_reviews fillcolor="#FFFFCC"]
+	"number_of_reviews.v1" [label=number_of_reviews fillcolor="#d4eafa"]
+	"number_of_reviews.v1" [label=number_of_reviews fillcolor="#d4eafa"]
+	"reviews_representation.v0" [label=reviews_representation fillcolor="#f7ce8d"]
+	"availability_365.v0" [label=availability_365 fillcolor="#FFFFCC"]
+	"availability_365.v1" [label=availability_365 fillcolor="#d4eafa"]
+	"availability_365.v1" [label=availability_365 fillcolor="#d4eafa"]
+	"reviews_representation.v0" [label=reviews_representation fillcolor="#f7ce8d"]
+	"comment_hotel.v0" [label=comment_hotel fillcolor="#f7ce8d"]
+	"number_of_reviews.v0" -> "(1) .toNumber()"
+	"(1) .toNumber()" -> "number_of_reviews.v1"
+	"number_of_reviews.v1" -> "(2) column-addition"
+	"(2) column-addition" -> "reviews_representation.v0"
+	"availability_365.v0" -> "(3) .toNumber()"
+	"(3) .toNumber()" -> "availability_365.v1"
+	"availability_365.v1" -> "(4) column-addition"
+	"reviews_representation.v0" -> "(4) column-addition"
+	"(4) column-addition" -> "comment_hotel.v0"
+}

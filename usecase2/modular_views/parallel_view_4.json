@@ -1,0 +1,26 @@
+[
+    {
+        "op": "core/column-removal",
+        "columnName": "neighbourhood_group",
+        "description": "Remove column neighbourhood_group",
+        "id": 1611688912324,
+        "time": "2021-01-26T19:19:27Z",
+        "schema": [
+            "id",
+            "name",
+            "host_id",
+            "host_name",
+            "neighbourhood",
+            "latitude",
+            "longitude",
+            "room_type",
+            "price",
+            "minimum_nights",
+            "number_of_reviews",
+            "last_review",
+            "reviews_per_month",
+            "calculated_host_listings_count",
+            "availability_365"
+        ]
+    }
+]

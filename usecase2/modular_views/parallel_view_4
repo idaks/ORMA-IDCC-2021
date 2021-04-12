@@ -1,0 +1,11 @@
+digraph ORMA {
+	node [fillcolor="#FFFFCC" shape=box style="rounded,filled"]
+	"neighbourhood_group.v0" [label=neighbourhood_group]
+	"remove-neighbourhood_group.v0" [label="remove-neighbourhood_group"]
+	node [fillcolor="#CCFFCC" fontname=Helvetica peripheries=1 shape=box style=filled]
+	"(1) removal"
+	"neighbourhood_group.v0" [label=neighbourhood_group fillcolor="#FFFFCC"]
+	"remove-neighbourhood_group.v0" [label="remove-neighbourhood_group" fillcolor="#D0D0D0"]
+	"neighbourhood_group.v0" -> "(1) removal"
+	"(1) removal" -> "remove-neighbourhood_group.v0"
+}

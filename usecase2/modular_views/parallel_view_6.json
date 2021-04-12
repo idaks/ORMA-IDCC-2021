@@ -1,0 +1,99 @@
+[
+    {
+        "op": "core/text-transform",
+        "engineConfig": {
+            "facets": [],
+            "mode": "row-based"
+        },
+        "columnName": "name",
+        "expression": "grel:value.partition(/^(\\()/)[-1].partition(/(\\))$/)[0]",
+        "onError": "keep-original",
+        "repeat": false,
+        "repeatCount": 10,
+        "description": "Text transform on 7594 cells in column name: grel:value.partition(/^(\\()/)[-1].partition(/(\\))$/)[0]",
+        "id": 1611688937418,
+        "time": "2021-01-26T19:19:27Z",
+        "schema": [
+            "id",
+            "name",
+            "host_id",
+            "host_name",
+            "neighbourhood_group",
+            "neighbourhood",
+            "latitude",
+            "longitude",
+            "room_type",
+            "price",
+            "minimum_nights",
+            "number_of_reviews",
+            "last_review",
+            "reviews_per_month",
+            "calculated_host_listings_count",
+            "availability_365"
+        ]
+    },
+    {
+        "op": "core/text-transform",
+        "engineConfig": {
+            "facets": [],
+            "mode": "row-based"
+        },
+        "columnName": "name",
+        "expression": "grel:value.replace('*','')",
+        "onError": "keep-original",
+        "repeat": false,
+        "repeatCount": 10,
+        "description": "Text transform on 77 cells in column name: grel:value.replace('*','')",
+        "id": 1611689468096,
+        "time": "2021-01-26T19:19:27Z",
+        "schema": [
+            "id",
+            "name",
+            "host_id",
+            "host_name",
+            "neighbourhood",
+            "latitude",
+            "longitude",
+            "room_type",
+            "price",
+            "minimum_nights",
+            "number_of_reviews",
+            "last_review",
+            "reviews_per_month",
+            "calculated_host_listings_count",
+            "availability_365"
+        ]
+    },
+    {
+        "op": "core/multivalued-cell-split",
+        "columnName": "name",
+        "keyColumnName": "id",
+        "mode": "separator",
+        "separator": "-",
+        "regex": false,
+        "description": "Split multi-valued cells in column name",
+        "id": 1618238325301,
+        "time": "2021-04-12T14:22:20Z",
+        "schema": [
+            "id",
+            "name",
+            "host_id",
+            "host_name",
+            "First_host",
+            "Second_host",
+            "neighbourhood",
+            "latitude",
+            "longitude",
+            "room_type",
+            "price",
+            "minimum_nights",
+            "number_of_reviews",
+            "reviews_representation",
+            "comment_hotel",
+            "last_review",
+            "reviews_per_month",
+            "calculated_host_listings_count",
+            "availability_365"
+        ]
+    }
+]

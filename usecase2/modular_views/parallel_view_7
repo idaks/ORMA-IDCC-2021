@@ -1,0 +1,11 @@
+digraph ORMA {
+	node [fillcolor="#FFFFCC" shape=box style="rounded,filled"]
+	"minimum_nights.v0" [label=minimum_nights]
+	"minimum_nights.v1" [label=minimum_nights]
+	node [fillcolor="#CCFFCC" fontname=Helvetica peripheries=1 shape=box style=filled]
+	"(1) .toNumber()"
+	"minimum_nights.v0" [label=minimum_nights fillcolor="#FFFFCC"]
+	"minimum_nights.v1" [label=minimum_nights fillcolor="#d4eafa"]
+	"minimum_nights.v0" -> "(1) .toNumber()"
+	"(1) .toNumber()" -> "minimum_nights.v1"
+}
