@@ -1,14 +1,14 @@
 import argparse
-from ORMA.orma import generate_dot, model_schema_evolution, translate_operator_json_to_graph, \
-    generate_table_dot, split_recipe
+from ORMA.orma import model_schema_evolution, \
+    generate_table_dot, split_recipe, parallel_view_main
 
 
 def model_analysis():
     FUNCTION_MAP = {
-        'parallel_view': generate_dot,
-        'summary_view': model_schema_evolution,
+        'parallel_view': parallel_view_main,
+        'schema_view': model_schema_evolution,
         'table_view': generate_table_dot,
-        'Clusters_Parallel_View': split_recipe
+        'modular_views': split_recipe
     }
 
     parser = argparse.ArgumentParser(description='OpenRefine Model Analysis')
@@ -22,7 +22,7 @@ def model_analysis():
     parser.add_argument(
         "--output",
         type=str,
-        default='usecase1/orma_exp.gv',
+        default='usecase1/table_view/',
         help='path of the output gv file'
     )
     parser.add_argument(
