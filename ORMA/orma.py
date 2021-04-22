@@ -374,7 +374,18 @@ def translate_operator_json_to_graph(json_data, schemas):
                     {'col_name': column_name, 'label': f'{create_new_node_of_column(column_name)}',
                      'color': _custome_v_color}
                 ]
-
+            # TODO
+            # reconciliation
+            elif operator['op'] == 'core/recon':
+                graph.process = [f'({i}) reconciliation']
+                column_name = operator['columnName']
+                graph.in_node_names += [
+                    {'col_name': column_name, 'label': f'{get_column_current_node(column_name)}'}
+                ]
+                graph.out_node_names += [
+                    {'col_name': column_name, 'label': f'{create_new_node_of_column(column_name)}',
+                     'color': _custome_v_color}
+                ]
             else:  # normal unary operation
                 try:
                     column_name = operator['columnName']
@@ -675,7 +686,7 @@ def schema_analysis(recipe, schema_info):
                              'style': 'dashed', 'edge_color': _gen_label_color_}
                 prev_schema = schema_info[i - 1]
                 old_idx = prev_schema.index(operator['columnName'])
-                prev_idx = old_idx-1
+                prev_idx = old_idx - 1
                 edge_to = {f'schema{i}': f"{prev_schema[prev_idx]}",
                            'color': _remove_color_,
                            }
@@ -753,6 +764,13 @@ def schema_analysis(recipe, schema_info):
 
             elif operator['op'] == 'core/mass-edit':
                 edge_from = {f'schema{i - 1}': operator['columnName'], 'label': ' mass-edit', 'edge_color': '#BB0000'}
+                edge_to = {f'schema{i}': operator['columnName'], 'color': _custome_v_color}
+                edges.append([edge_from, edge_to])
+
+            # TODO
+            # reconciliation
+            elif operator['op'] == 'core/recon':
+                edge_from = {f'schema{i - 1}': operator['columnName'], 'label': ' reconciliation', 'edge_color': '#BB0000'}
                 edge_to = {f'schema{i}': operator['columnName'], 'color': _custome_v_color}
                 edges.append([edge_from, edge_to])
             else:  # normal unary operation
@@ -1163,7 +1181,7 @@ def table_view(project_id):
                 colname = operator['columnName']
                 keyColumnName = operator['keyColumnName']
                 mode = operator['separator']
-                separator =f'"{operator["separator"]}"'
+                separator = f'"{operator["separator"]}"'
                 regex = operator['regex']
                 graph.process = [f'({i}) multivalued-cell-split']
                 graph.in_node_names += [
@@ -1177,6 +1195,46 @@ def table_view(project_id):
                 graph.out_node_names += [
                     cur_table
                 ]
+            elif operator['op'] == 'core/recon':
+                colname = operator['columnName']
+                graph.process = [f'({i}) reconciliation']
+                graph.in_node_names += [
+                    prev_table,
+                    # colname,
+                    # keyColumnName,
+                    # mode,
+                    # separator,
+                    # regex
+                ]
+                graph.out_node_names += [
+                    cur_table
+                ]
+            #     "engineConfig": {
+            #         "facets": [],
+            #         "mode": "row-based"
+            #     },
+            #     "columnName": "City",
+            #     "config": {
+            #         "mode": "standard-service",
+            #         "service": "http://localhost:8000/reconcile",
+            #         "identifierSpace": "http://localhost:8000/",
+            #         "schemaSpace": "http://localhost:8000/",
+            #         "type": {
+            #             "id": "/csv-recon",
+            #             "name": "CSV-recon"
+            #         },
+            #         "autoMatch": true,
+            #         "columnDetails": [
+            #             {
+            #                 "column": "Zip",
+            #                 "propertyName": "ZIP",
+            #                 "propertyID": "ZIP"
+            #             }
+            #         ],
+            #         "limit": 0
+            #     },
+            #     "description": "Reconcile cells in column City to type /csv-recon"
+            # }
 
             else:  # normal unary operation
                 try:
@@ -1362,7 +1420,7 @@ def write_linked_dep(edges):
             nodes.add(u)
             nodes.add(v)
             # if u != v:
-                # Add edge u->v and u->v
+            # Add edge u->v and u->v
             neighbors_of.setdefault(u, []).append(v)
             neighbors_of.setdefault(v, []).append(u)
 
