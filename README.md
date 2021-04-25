@@ -6,6 +6,10 @@ Workflow of using ORMA
 
      `git clone https://github.com/idaks/ORMA-IDCC-2021`
 
+2. Install required dependencies (Graphviz)
+
+      `pip install graphviz`
+
 2. Download OpenRefine Python Client library Dependency
 
      `cd ORMA-IDCC-2021`
