@@ -12,10 +12,11 @@ Parameters:
      output gv file path/name, 
      command {'modular_views', 'schema_views', 'parallel_views', 
     'table_view'}
+     combined {True, False}
 
 Bash Command:
    `python main.py --project_id [Project ID] --output [Output file path] command {'modular_views', 'schema_views', 'parallel_views', 
-'table_view'}`
+'table_view'} --combined False`
 
 
 We have four subfolders for saving views by these four commands: 
@@ -23,4 +24,5 @@ We have four subfolders for saving views by these four commands:
 1. modular_views - sub-workflows of parallel views 
 2. parallel_view - workflow view with column-level dependency relationship
 3. schema_view - workflow view at schema level
-4. table_view - workflow view at table level
+4. table_view w.o.t params - workflow view at table level without parameters (set combined as False)
+5. table view w.t params - workflow view at table level with parameters (set combined as True)
