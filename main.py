@@ -28,11 +28,19 @@ def model_analysis():
     parser.add_argument(
         'command', choices=FUNCTION_MAP.keys()
     )
+    parser.add_argument(
+        '--combined',
+        type=bool,
+        default=False,
+        help='return the combined table view'
+    )
 
     args = parser.parse_args()
     func = FUNCTION_MAP[args.command]
-
-    func(args.project_id, args.output)
+    if args.command == 'table_view':
+        func(args.project_id, args.output, args.combined)
+    else:
+        func(args.project_id, args.output)
 
 
 if __name__ == '__main__':
