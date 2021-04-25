@@ -57,6 +57,7 @@ Workflow of using ORMA
                             [table_view,schema_view,parallel_view,modular_views],
                             Default: table_view
       -c COMBINED, --combined COMBINED
-                            Table view with/without Parameters, Default: False
+                        Only input when you choose Table view. [with/without
+                        Parameters] Default: False
       -dot DOT, --dot DOT   Dot Path, if not initialized will use the dot
                             installation environment path

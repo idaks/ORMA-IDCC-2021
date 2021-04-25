@@ -16,7 +16,7 @@ def run():
     parser.add_argument('-t', '--type', default="table_view",
                         help='Workflow Views Type, Produce [table_view,schema_view,parallel_view,modular_views], Default: table_view')
     parser.add_argument('-c', '--combined', default=False,
-                        help="Table view with/without Parameters, Default: False")
+                        help="Only input when you choose Table view. [with/without Parameters] Default: False")
     parser.add_argument('-dot', '--dot', default=None,
                         help="Dot Path, if not initialized will use the dot installation environment path")
     args = parser.parse_args(argv[1:])
