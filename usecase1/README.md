@@ -15,8 +15,8 @@ Parameters:
      combined {True, False}
 
 Bash Command:
-   `python main.py --project_id [Project ID] --output [Output file path] command {'modular_views', 'schema_views', 'parallel_views', 
-'table_view'} --combined False`
+   `python__main__.py [-h] [-i INPUT] [-o OUTPUT] [-t TYPE] [-c COMBINED]
+                   [-dot DOT]`
 
 
 We have four subfolders for saving views by these four commands: 
