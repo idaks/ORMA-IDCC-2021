@@ -21,8 +21,8 @@ digraph ORMA {
 	"host_name.v1" [label=host_name]
 	"host_name.v2" [label=host_name]
 	"host_name.v2" [label=host_name]
-	"host_name 1.v0" [label="host_name 1"]
 	"host_name 2.v0" [label="host_name 2"]
+	"host_name 1.v0" [label="host_name 1"]
 	"host_name 1.v0" [label="host_name 1"]
 	"First_host.v0" [label=First_host]
 	"host_name 2.v0" [label="host_name 2"]
@@ -95,8 +95,8 @@ digraph ORMA {
 	"host_name.v1" [label=host_name fillcolor="#fbb8b8"]
 	"host_name.v2" [label=host_name fillcolor="#f7ce8d"]
 	"host_name.v2" [label=host_name fillcolor="#f7ce8d"]
-	"host_name 1.v0" [label="host_name 1" fillcolor="#f7ce8d"]
 	"host_name 2.v0" [label="host_name 2" fillcolor="#f7ce8d"]
+	"host_name 1.v0" [label="host_name 1" fillcolor="#f7ce8d"]
 	"host_name 1.v0" [label="host_name 1" fillcolor="#f7ce8d"]
 	"First_host.v0" [label=First_host fillcolor="#FFFFCC"]
 	"host_name 2.v0" [label="host_name 2" fillcolor="#f7ce8d"]
@@ -133,8 +133,8 @@ digraph ORMA {
 	"host_name.v1" -> "(10) .trim()"
 	"(10) .trim()" -> "host_name.v2"
 	"host_name.v2" -> "(11) column-split"
-	"(11) column-split" -> "host_name 1.v0"
 	"(11) column-split" -> "host_name 2.v0"
+	"(11) column-split" -> "host_name 1.v0"
 	"host_name 1.v0" -> "(12) column-rename"
 	"(12) column-rename" -> "First_host.v0"
 	"host_name 2.v0" -> "(13) column-rename"

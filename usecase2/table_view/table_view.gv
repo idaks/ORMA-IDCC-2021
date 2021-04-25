@@ -38,38 +38,6 @@ digraph "ORMA-Table-View" {
 	table17
 	table18
 	node [fillcolor="#FAFAF0" shape=box style="rounded,filled"]
-	"col-name \"id\""
-	"col-name \"name\""
-	"col-name \"neighbourhood_group\""
-	"col-name \"minimum_nights\""
-	"col-name \"neighbourhood\""
-	"col-name \"name\""
-	"col-name \"number_of_reviews\""
-	"col-name \"number_of_reviews\""
-	"newColumnName \"reviews_representation\""
-	"expression \"if(value>100,'high','low')\""
-	"InsertPosition \"11\""
-	"col-name \"host_name\""
-	"col-name \"host_name\""
-	"col-name  \"host_name\""
-	"separator \"\s+And\s+\""
-	"removeOriginalColumn \"False\""
-	"oldColumnName \"host_name 1\""
-	"newColumnName \"First_host\""
-	"oldColumnName \"host_name 2\""
-	"newColumnName \"Second_host\""
-	"col-name \"availability_365\""
-	"col-name \"reviews_representation\""
-	"newColumnName \"comment_hotel\""
-	"expression \"if(and(value=='high', cells.availability_365.value <100),'popular','other')\""
-	"InsertPosition \"14\""
-	"col-name \"name\""
-	"keyColumnName id"
-	"mode -"
-	"separator \"-\""
-	"\"regex False\""
-	"col-name \"last_review\""
-	"col-name \"last_review\""
 	node [fillcolor="#CCFFCC" fontname=Helvetica peripheries=1 shape=box style=filled]
 	"(1) .toNumber()"
 	"(2) value.partition(/^(\()/)[-1].partition(/(\))$/)[0]"
@@ -90,71 +58,39 @@ digraph "ORMA-Table-View" {
 	"(17) .toDate()"
 	"(18) value.split('T')[0]"
 	table0 -> "(1) .toNumber()"
-	"col-name \"id\"" -> "(1) .toNumber()"
 	"(1) .toNumber()" -> table1
 	table1 -> "(2) value.partition(/^(\()/)[-1].partition(/(\))$/)[0]"
-	"col-name \"name\"" -> "(2) value.partition(/^(\()/)[-1].partition(/(\))$/)[0]"
 	"(2) value.partition(/^(\()/)[-1].partition(/(\))$/)[0]" -> table2
 	table2 -> "(3) column-removal"
-	"col-name \"neighbourhood_group\"" -> "(3) column-removal"
 	"(3) column-removal" -> table3
 	table3 -> "(4) .toNumber()"
-	"col-name \"minimum_nights\"" -> "(4) .toNumber()"
 	"(4) .toNumber()" -> table4
 	table4 -> "(5) mass-edit"
-	"col-name \"neighbourhood\"" -> "(5) mass-edit"
 	"(5) mass-edit" -> table5
 	table5 -> "(6) value.replace('*','')"
-	"col-name \"name\"" -> "(6) value.replace('*','')"
 	"(6) value.replace('*','')" -> table6
 	table6 -> "(7) .toNumber()"
-	"col-name \"number_of_reviews\"" -> "(7) .toNumber()"
 	"(7) .toNumber()" -> table7
 	table7 -> "(8) column-addition"
-	"col-name \"number_of_reviews\"" -> "(8) column-addition"
-	"newColumnName \"reviews_representation\"" -> "(8) column-addition"
-	"expression \"if(value>100,'high','low')\"" -> "(8) column-addition"
-	"InsertPosition \"11\"" -> "(8) column-addition"
 	"(8) column-addition" -> table8
 	table8 -> "(9) mass-edit"
-	"col-name \"host_name\"" -> "(9) mass-edit"
 	"(9) mass-edit" -> table9
 	table9 -> "(10) .trim()"
-	"col-name \"host_name\"" -> "(10) .trim()"
 	"(10) .trim()" -> table10
 	table10 -> "(11) column-split"
-	"col-name  \"host_name\"" -> "(11) column-split"
-	"separator \"\s+And\s+\"" -> "(11) column-split"
-	"removeOriginalColumn \"False\"" -> "(11) column-split"
 	"(11) column-split" -> table11
 	table11 -> "(12) column-rename"
-	"oldColumnName \"host_name 1\"" -> "(12) column-rename"
-	"newColumnName \"First_host\"" -> "(12) column-rename"
 	"(12) column-rename" -> table12
 	table12 -> "(13) column-rename"
-	"oldColumnName \"host_name 2\"" -> "(13) column-rename"
-	"newColumnName \"Second_host\"" -> "(13) column-rename"
 	"(13) column-rename" -> table13
 	table13 -> "(14) .toNumber()"
-	"col-name \"availability_365\"" -> "(14) .toNumber()"
 	"(14) .toNumber()" -> table14
 	table14 -> "(15) column-addition"
-	"col-name \"reviews_representation\"" -> "(15) column-addition"
-	"newColumnName \"comment_hotel\"" -> "(15) column-addition"
-	"expression \"if(and(value=='high', cells.availability_365.value <100),'popular','other')\"" -> "(15) column-addition"
-	"InsertPosition \"14\"" -> "(15) column-addition"
 	"(15) column-addition" -> table15
 	table15 -> "(16) multivalued-cell-split"
-	"col-name \"name\"" -> "(16) multivalued-cell-split"
-	"keyColumnName id" -> "(16) multivalued-cell-split"
-	"mode -" -> "(16) multivalued-cell-split"
-	"separator \"-\"" -> "(16) multivalued-cell-split"
-	"\"regex False\"" -> "(16) multivalued-cell-split"
 	"(16) multivalued-cell-split" -> table16
 	table16 -> "(17) .toDate()"
-	"col-name \"last_review\"" -> "(17) .toDate()"
 	"(17) .toDate()" -> table17
 	table17 -> "(18) value.split('T')[0]"
-	"col-name \"last_review\"" -> "(18) value.split('T')[0]"
 	"(18) value.split('T')[0]" -> table18
 }
