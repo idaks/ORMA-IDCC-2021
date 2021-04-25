@@ -15,11 +15,11 @@ import json
 from graphviz import Digraph
 
 from .extra_info import generate_recipe as gen_recipe
+# from extra_info import generate_recipe as gen_recipe
 # import all library needed for this class
 import re
 from collections import Counter
 from pprint import pprint
-
 
 _color_ = '#FFFFCC'  # default color for output node
 _inNodeColor_ = '#FAFAF0'  # default color for input node
@@ -771,7 +771,8 @@ def schema_analysis(recipe, schema_info):
             # TODO
             # reconciliation
             elif operator['op'] == 'core/recon':
-                edge_from = {f'schema{i - 1}': operator['columnName'], 'label': ' reconciliation', 'edge_color': '#BB0000'}
+                edge_from = {f'schema{i - 1}': operator['columnName'], 'label': ' reconciliation',
+                             'edge_color': '#BB0000'}
                 edge_to = {f'schema{i}': operator['columnName'], 'color': _custome_v_color}
                 edges.append([edge_from, edge_to])
             else:  # normal unary operation
@@ -1410,9 +1411,10 @@ def get_node_from_table_view(orma_data):
     for graph in orma_data:
         mixed_nodes += graph.in_node_names
         mixed_nodes += graph.out_node_names
+
+    pattern = re.compile(r'(table)\d+')
     for nodes in mixed_nodes:
-        if 'table' in nodes:
-            print(nodes)
+        if pattern.match(nodes):
             data_nodes.append(nodes)
         else:
             params_nodes.append(nodes)
@@ -1596,7 +1598,7 @@ def cluster_main(project_id):
     return components
 
 
-def split_recipe(project_id=2124203262743, output_gv='../usecase2/modular_views/modular_views/parallel_view'):
+def split_recipe(project_id=2124203262743, output_gv='../usecase2/modular_views/module_view'):
     # how to define subworkflow:
     # same input or same output
     components = cluster_main(project_id)
@@ -1642,9 +1644,62 @@ def split_recipe(project_id=2124203262743, output_gv='../usecase2/modular_views/
             pass
 
 
+class ORMA:
+    def __init__(self):
+        """
+          Init functions for this class, put any initialization attributes
+          that you need here
+          """
+        pass
+
+    @staticmethod
+    def generate_table_view(project_id, output, combined=False):
+        generate_table_dot(project_id, output, combined)
+
+    @staticmethod
+    def generate_parallel_view(project_id, output_gv):
+        parallel_view_main(project_id, output_gv)
+
+    @staticmethod
+    def generate_schema_view(project_id, output_gv):
+        model_schema_evolution(project_id=project_id, output_gv=output_gv)
+
+    @staticmethod
+    def generate_module_views(project_id, output_gv):
+        split_recipe(project_id=project_id, output_gv=output_gv)
+
+
+class ORMAProcessor:
+    def __init__(self):
+        pass
+
+    def generate_views(self, project_id, output, type="table_view", combined=False, **kwargs):
+        if type == "table_view":
+            if combined:
+                return ORMA.generate_table_view(project_id, output, combined)
+            else:
+                return ORMA.generate_table_view(project_id, output, **kwargs)
+        elif type == "schema_view":
+            return ORMA.generate_schema_view(project_id, output)
+        elif type == "parallel_view":
+            return ORMA.generate_parallel_view(project_id, output)
+        elif type == 'modular_views':
+            return ORMA.generate_module_views(project_id, output)
+        else:
+            raise BaseException("Workflow type Only Serial, Parallel or Merge")
+
+
 if __name__ == '__main__':
-    split_recipe(project_id=2494992270641)
-    # cluster_main(project_id=2494992270641)
+    # ORMAProcessor().generate_views(2494992270641, 'usecase2/table_view/table_view.gv',
+    #                                'table_view')
+    # ORMAProcessor().generate_views(2494992270641, 'usecase2/schema_view/schema_view.gv',
+    #                                'schema_view')
+    # ORMAProcessor().generate_views(2494992270641, 'usecase2/parallel_view/parallel_view.gv',
+    #                                'parallel_view')
+    ORMAProcessor().generate_views(2494992270641, '../usecase2/modular_views/module_view',
+                                   'modular_views')
+    # split_recipe(project_id=2494992270641)
+    # cluster_main(project_id=2494992270641) usecase2/modular_views/parallel_view
     # split_recipe()
     # generate_table_dot()  # table_view
     # model_schema_evolution(project_id=2124203262743, output_gv='output/schema_view.gv') # summary view
