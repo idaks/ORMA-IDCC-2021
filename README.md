@@ -21,15 +21,15 @@ Workflow of using ORMA
   
      `dot - graphviz version 2.42.3 (20191010.1750)`
       
-   a. Install the latest version Download `Graphviz <https://www.graphviz.org/download/>`_
+   a. Install the latest version Download _`Graphviz <https://www.graphviz.org/download/>`_
 
     1). For Mac users (ex.use Homebrew):
     
     `$ brew install graphviz`
     
-    2). For Windows users, choose one of the methods from the `download <https://www.graphviz.org/download/>`_website
+    2). For Windows users, choose one of the methods from the _`download <https://www.graphviz.org/download/>`_website
     
-    3). For Linux users, choose one of the methods from the `download <https://www.graphviz.org/download/>`_ website
+    3). For Linux users, choose one of the methods from the _`download <https://www.graphviz.org/download/>`_ website
     
     
 4. Change run.bash to run main.py (Please refer to README.md in usecase1 folder)
