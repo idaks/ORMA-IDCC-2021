@@ -39,3 +39,24 @@ Workflow of using ORMA
     
     
 4. Change run.bash to run main.py (Please refer to README.md in usecase1 folder)
+
+`> python __main__.py `
+
+    usage: __main__.py [-h] [-i INPUT] [-o OUTPUT] [-t TYPE] [-c COMBINED]
+                       [-dot DOT]
+    
+    ORMA v0.0.1
+    
+    optional arguments:
+      -h, --help            show this help message and exit
+      -i INPUT, --input INPUT
+                            openrefine project ID
+      -o OUTPUT, --output OUTPUT
+                            workflow views
+      -t TYPE, --type TYPE  Workflow Views Type, Produce
+                            [table_view,schema_view,parallel_view,modular_views],
+                            Default: table_view
+      -c COMBINED, --combined COMBINED
+                            Table view with/without Parameters, Default: False
+      -dot DOT, --dot DOT   Dot Path, if not initialized will use the dot
+                            installation environment path
