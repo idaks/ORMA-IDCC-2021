@@ -12,13 +12,14 @@ import argparse
 import json
 
 # from extra_info import generate_recipe as gen_recipe
+from graphviz import Digraph
+
 from .extra_info import generate_recipe as gen_recipe
 # import all library needed for this class
 import re
 from collections import Counter
 from pprint import pprint
 
-from graphviz import Digraph
 
 _color_ = '#FFFFCC'  # default color for output node
 _inNodeColor_ = '#FAFAF0'  # default color for input node
@@ -1016,7 +1017,7 @@ def model_schema_evolution(project_id, output_gv):
 
 
 # TASK 3: Create a table_view of data cleaing workflow
-def table_view(project_id):
+def table_view(project_id, combined=False):
     json_data, schema_info = gen_recipe(project_id)
     table_view_data = []
     for i, operator in enumerate(json_data, start=1):
@@ -1035,75 +1036,113 @@ def table_view(project_id):
 
                 insertpos = f'InsertPosition "{operator["columnInsertIndex"]}"'  # physical position
                 graph.process = [f'({i}) column-addition']
-                graph.in_node_names += [
-                    prev_table,
-                    # colname,
-                    # newColumnName,
-                    # grelexp,
-                    # insertpos
-                ]
-                graph.out_node_names += [
-                    cur_table
-                ]
+                if not combined:
+                    graph.in_node_names += [
+                        prev_table
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
+                else:
+                    graph.in_node_names += [
+                        prev_table,
+                        colname,
+                        newColumnName,
+                        grelexp,
+                        insertpos
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
 
             elif operator['op'] == 'core/column-split':  # split operation
                 colname = f'col-name  "{operator["columnName"]}"'
                 separator = f'separator "{operator["separator"]}"'
                 remove = f'removeOriginalColumn "{operator["removeOriginalColumn"]}"'
                 graph.process = [f'({i}) column-split']
-                graph.in_node_names += [
-                    prev_table,
-                    # colname,
-                    # separator,
-                    # remove
-                ]
-                graph.out_node_names += [
-                    cur_table
-                ]
+                if not combined:
+                    graph.in_node_names += [
+                        prev_table
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
+                else:
+                    graph.in_node_names += [
+                        prev_table,
+                        colname,
+                        separator,
+                        remove
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
 
             elif operator['op'] == 'core/column-rename':  # split operation
                 oldColumnName = f'oldColumnName "{operator["oldColumnName"]}"'
                 newColumnName = f'newColumnName "{operator["newColumnName"]}"'
                 graph.process = [f'({i}) column-rename']
-                graph.in_node_names += [
-                    prev_table,
-                    # oldColumnName,
-                    # newColumnName
-                ]
-                graph.out_node_names += [
-                    cur_table
-                ]
+                if not combined:
+                    graph.in_node_names += [
+                        prev_table
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
+                else:
+                    graph.in_node_names += [
+                        prev_table,
+                        oldColumnName,
+                        newColumnName
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
 
             elif operator['op'] == 'core/column-removal':
                 colname = f'col-name "{operator["columnName"]}"'
-                # expression = f'expression "{operator["engineConfig"]["facets"][0]["expression"].split(":")[-1]}"'
                 graph.process = [f'({i}) column-removal']
 
-                graph.in_node_names += [
-                    prev_table,
-                    # colname,
-                    # expression
-                ]
-                # TODO
-                # port is needed to represent null
-                graph.out_node_names += [
-                    cur_table
-                ]
+                if not combined:
+                    graph.in_node_names += [
+                        prev_table,
+                    ]
+                    # TODO
+                    # port is needed to represent null
+                    graph.out_node_names += [
+                        cur_table
+                    ]
+                else:
+                    graph.in_node_names += [
+                        prev_table,
+                        colname,
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
 
             elif operator['op'] == 'core/column-addition-by-fetching-urls':
                 colname = f'col-name "{operator["baseColumName"]}"'
                 newColumnName = f'newColumnName "{operator["newColumName"]}"'
                 urlExpression = f'urlExpression "{operator["urlExpression"].split(":")[-1]}"'
                 graph.process = [f'({i}) column addition-by-fetching-urls']
-                graph.in_node_names += [
-                    prev_table,
-                    # colname,
-                    # newColumnName,
-                    # urlExpression
-                ]
-                graph.out_node_names += [
-                    cur_table
-                ]
+                if not combined:
+                    graph.in_node_names += [
+                        prev_table
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
+                else:
+                    graph.in_node_names += [
+                        prev_table,
+                        colname,
+                        newColumnName,
+                        urlExpression
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
 
             elif operator['op'] == 'core/multivalued-cell-join':
                 colname = f'col-name "{operator["columName"]}"'
@@ -1111,15 +1150,23 @@ def table_view(project_id):
                 separator = f'separator "{operator["separator"]}"'
 
                 graph.process = [f'({i}) multivalued-cell-join']
-                graph.in_node_names += [
-                    prev_table,
-                    # colname,
-                    # keyColumnName,
-                    # separator
-                ]
-                graph.out_node_names += [
-                    cur_table
-                ]
+                if not combined:
+                    graph.in_node_names += [
+                        prev_table
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
+                else:
+                    graph.in_node_names += [
+                        prev_table,
+                        colname,
+                        keyColumnName,
+                        separator
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
 
             elif operator['op'] == 'core/transpose-columns-into-rows':
                 colname = f'col-name "{operator["startColumnName"]}"'
@@ -1128,113 +1175,140 @@ def table_view(project_id):
                 separator = f'separator "{operator["separator"]}"'
 
                 graph.process = [f'({i}) transpose-columns-into-rows']
-                graph.in_node_names += [
-                    prev_table,
-                    # colname,
-                    # columnCount,
-                    # combinedColumnName,
-                    # separator
-                ]
-                graph.out_node_names += [
-                    cur_table
-                ]
+                if not combined:
+                    graph.in_node_names += [
+                        prev_table
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
+                else:
+                    graph.in_node_names += [
+                        prev_table,
+                        colname,
+                        columnCount,
+                        combinedColumnName,
+                        separator
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
 
             elif operator['op'] == 'core/row-removal':
                 colname = f'col-name "{operator["engineConfig"]["facets"][0]["columnName"]}"'
                 expression = f'expression "{operator["engineConfig"]["facets"][0]["expression"].split(":")[-1]}"'
 
                 graph.process = [f'({i}) row-removal']
-                graph.in_node_names += [
-                    prev_table,
-                    # colname,
-                    # expression
-                ]
-                graph.out_node_names += [
-                    cur_table
-                ]
+
+                if not combined:
+                    graph.in_node_names += [
+                        prev_table,
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
+                else:
+                    graph.in_node_names += [
+                        prev_table,
+                        colname,
+                        expression
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
 
             elif operator['op'] == 'core/column-move':
                 colname = f'col-name "{operator["columnName"]}"'
                 index = operator["index"]
 
                 graph.process = [f'({i}) Move_to #{index}']
-                graph.in_node_names += [
-                    prev_table,
-                    # colname,
-                    # index
-                ]
-                graph.out_node_names += [
-                    cur_table
-                ]
+                if not combined:
+                    graph.in_node_names += [
+                        prev_table
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
+                else:
+                    graph.in_node_names += [
+                        prev_table,
+                        colname,
+                        index
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
 
             elif operator['op'] == 'core/mass-edit':
                 colname = f'col-name "{operator["columnName"]}"'
                 graph.process = [f'({i}) mass-edit']
-                graph.in_node_names += [
-                    prev_table,
-                    # colname
-                ]
-                graph.out_node_names += [
-                    cur_table
-                ]
+                if not combined:
+                    graph.in_node_names += [
+                        prev_table
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
+                else:
+                    graph.in_node_names += [
+                        prev_table,
+                        colname
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
             elif operator['op'] == 'core/multivalued-cell-split':
-                colname = operator['columnName']
-                keyColumnName = operator['keyColumnName']
-                mode = operator['separator']
-                separator = f'"{operator["separator"]}"'
-                regex = operator['regex']
+                colname = f'col-name "{operator["columnName"]}"'
+                keyColumnName = f'keyColumnName {operator["keyColumnName"]}'
+                mode = f"mode {operator['separator']}"
+                separator = f'separator "{operator["separator"]}"'
+                regex = f'"regex {operator["regex"]}"'
                 graph.process = [f'({i}) multivalued-cell-split']
-                graph.in_node_names += [
-                    prev_table,
-                    # colname,
-                    # keyColumnName,
-                    # mode,
-                    # separator,
-                    # regex
-                ]
-                graph.out_node_names += [
-                    cur_table
-                ]
+                if not combined:
+                    graph.in_node_names += [
+                        prev_table
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
+                else:
+                    graph.in_node_names += [
+                        prev_table,
+                        colname,
+                        keyColumnName,
+                        mode,
+                        separator,
+                        regex
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
             elif operator['op'] == 'core/recon':
                 colname = operator['columnName']
                 graph.process = [f'({i}) reconciliation']
-                graph.in_node_names += [
-                    prev_table,
-                    # colname,
-                    # keyColumnName,
-                    # mode,
-                    # separator,
-                    # regex
-                ]
-                graph.out_node_names += [
-                    cur_table
-                ]
-            #     "engineConfig": {
-            #         "facets": [],
-            #         "mode": "row-based"
-            #     },
-            #     "columnName": "City",
-            #     "config": {
-            #         "mode": "standard-service",
-            #         "service": "http://localhost:8000/reconcile",
-            #         "identifierSpace": "http://localhost:8000/",
-            #         "schemaSpace": "http://localhost:8000/",
-            #         "type": {
-            #             "id": "/csv-recon",
-            #             "name": "CSV-recon"
-            #         },
-            #         "autoMatch": true,
-            #         "columnDetails": [
-            #             {
-            #                 "column": "Zip",
-            #                 "propertyName": "ZIP",
-            #                 "propertyID": "ZIP"
-            #             }
-            #         ],
-            #         "limit": 0
-            #     },
-            #     "description": "Reconcile cells in column City to type /csv-recon"
-            # }
+                recon_id = operator['config']['type']['id']
+                columns = []
+                mode = operator['config']['mode']
+                if operator['config']['columnDetails']:
+                    columns = operator['config']['columnDetails'][0]['column']
+                if not combined:
+                    graph.in_node_names += [
+                        prev_table
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
+                else:
+                    graph.in_node_names += [
+                        prev_table,
+                        colname,
+                        recon_id,
+                        columns,
+                        mode
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
 
             else:  # normal unary operation
                 try:
@@ -1246,14 +1320,22 @@ def table_view(project_id):
                     else:
                         # value change
                         graph.process = [f'({i}) {expression.split(":")[-1]}']
-                    colname = f'col-name "{operator["columnName"]}"'
-                    graph.in_node_names += [
-                        prev_table,
-                        # colname,
-                    ]
-                    graph.out_node_names += [
-                        cur_table
-                    ]
+                    colname = f'col-name "{column_name}"'
+                    if not combined:
+                        graph.in_node_names += [
+                            prev_table
+                        ]
+                        graph.out_node_names += [
+                            cur_table
+                        ]
+                    else:
+                        graph.in_node_names += [
+                            prev_table,
+                            colname
+                        ]
+                        graph.out_node_names += [
+                            cur_table
+                        ]
 
                 except KeyError:
                     graph.process = [f'({i}) {operator["op"].split("/")[-1]}']
@@ -1277,27 +1359,43 @@ def table_view(project_id):
                 row_number = desc.split(",")[0].split(" ")[-1]
                 process = f'single_cell_edit row #{row_number}'
                 graph.process = [f'({i}) {process}']
-                graph.in_node_names += [
-                    prev_table,
-                    # column_name,
-                    # row_number
-                ]
-                graph.out_node_names += [
-                    cur_table
-                ]
+                if not combined:
+                    graph.in_node_names += [
+                        prev_table
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
+                else:
+                    graph.in_node_names += [
+                        prev_table,
+                        column_name,
+                        row_number
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
             else:
                 # Star/flag row 1
                 desc = operator['description']
                 row_number = desc.split(" ")[-1]
                 process = f'{"_".join(desc.split(" ")[:2])} #{row_number}'
                 graph.process = [f'({i}) {process}']
-                graph.in_node_names += [
-                    prev_table,
-                    # row_number
-                ]
-                graph.out_node_names += [
-                    cur_table
-                ]
+                if not combined:
+                    graph.in_node_names += [
+                        prev_table
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
+                else:
+                    graph.in_node_names += [
+                        prev_table,
+                        row_number
+                    ]
+                    graph.out_node_names += [
+                        cur_table
+                    ]
         graph.edge += [{'from': graph.in_node_names, 'to': graph.process},
                        {'from': graph.process, 'to': graph.out_node_names}]
         table_view_data.append(graph)
@@ -1305,21 +1403,43 @@ def table_view(project_id):
     return table_view_data
 
 
-def generate_table_dot(project_id=2124203262743, output='output/table_view.gv'):
+def get_node_from_table_view(orma_data):
+    mixed_nodes = []
+    data_nodes = []  # nodes include data node
+    params_nodes = []
+    for graph in orma_data:
+        mixed_nodes += graph.in_node_names
+        mixed_nodes += graph.out_node_names
+    for nodes in mixed_nodes:
+        if 'table' in nodes:
+            print(nodes)
+            data_nodes.append(nodes)
+        else:
+            params_nodes.append(nodes)
+    return data_nodes, params_nodes
+
+
+def generate_table_dot(project_id=2124203262743, output='output/table_view.gv', combined=False):
     # data node: #FFFFCC
     # process: #CCFFCC
-    table_view_data = table_view(project_id)
-    feature_data = {'shape': 'box', 'style': 'rounded,filled', 'fillcolor': _color_, 'peripheries': 1,
+    table_view_data = table_view(project_id, combined)
+    feature_data = {'shape': 'box', 'style': 'rounded,filled', 'fillcolor': _color_, 'peripheries': '1',
                     'fontname': 'Helvetica'}
     tableview_dot = Digraph('ORMA-Table-View', filename=output)
     tableview_dot.graph_attr['ranksep'] = '0.2'
-    data_nodes = get_node_from_ormadata(table_view_data)
+    data_nodes, params_nodes = get_node_from_table_view(table_view_data)
     edges = get_edge_from_ormadata(table_view_data)
     tableview_dot.attr('node', shape=feature_data['shape'], style=feature_data['style'],
                        fillcolor=feature_data['fillcolor'])
     for node_item in data_nodes:
         # data node: in_node & out_node
         tableview_dot.node(node_item)
+
+    # parameter nodes
+    tableview_dot.attr('node', shape=feature_data['shape'], style=feature_data['style'],
+                       fillcolor=_inNodeColor_)
+    for params in params_nodes:
+        tableview_dot.node(params)
 
     tableview_dot.attr('node', shape=feature_data['shape'], style='filled', fillcolor=_process_color_,
                        peripheries='1', fontname='Helvetica')
