@@ -43,7 +43,7 @@ Workflow of using ORMA
    `python`
    
    
-   >>>`Python 3.7.8 (default, Jul 29 2020, 16:29:47)
+   `Python 3.7.8 (default, Jul 29 2020, 16:29:47)
     [Clang 11.0.3 (clang-1103.0.32.62)] on darwin
     Type "help", "copyright", "credits" or "license" for more information.`
 
