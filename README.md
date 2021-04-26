@@ -41,11 +41,9 @@ Workflow of using ORMA
 4. Python Version 3.0+; Download **[Python](https://www.python.org/downloads/)**.
    `python`
    
-   
-    `Python 3.7.8 (default, Jul 29 2020, 16:29:47)
+   `Python 3.7.8 (default, Jul 29 2020, 16:29:47)
     [Clang 11.0.3 (clang-1103.0.32.62)] on darwin
-    Type "help", "copyright", "credits" or "license" for more information.
-`
+    Type "help", "copyright", "credits" or "license" for more information.`
 
 Change run.bash to run __main__.py (Please refer to README.md in usecase1 folder)
 
