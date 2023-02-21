@@ -60,34 +60,6 @@ class ORMAGraph:
 
 
 def extract_facet(operation):
-    '''
-    distinguish depends on & derived from
-    find soft derivation from facet
-    "engineConfig": {
-      "facets": [
-        {
-          "type": "list",
-          "name": "Zip",
-          "expression": "value",
-          "columnName": "Zip",
-          "invert": false,
-          "omitBlank": false,
-          "omitError": false,
-          "selection": [
-            {
-              "v": {
-                "v": "96701",
-                "l": "96701"
-              }
-            }
-          ],
-          "selectBlank": false,
-          "selectError": false
-        }
-      ],
-    :return: edge_type: use facet: True; without facet: False
-    derived_columns: columns from facet [soft derivation]
-    '''
     if 'engineConfig' in [*operation]:
         engineConfig = operation['engineConfig']
         facets = engineConfig['facets']
@@ -105,49 +77,6 @@ def extract_facet(operation):
         edge_type = False
         derived_columns = []
     return edge_type, derived_columns
-
-
-def deduplicate_d_columns(in_node_name: list, derived_columns: list):
-    # delete the column name which is also the input nodes
-    for in_node in in_node_name:
-        in_col_name = in_node.split('.')[0]
-        if in_col_name in derived_columns:
-            # we need to delete this from derived columns
-            derived_columns.remove(in_col_name)
-        else:
-            pass
-    return derived_columns
-
-
-def Update_columns(orma_data, derived_columns: list):
-    # update derived column names with latest versions
-    current_in_nodes = []
-    for graph in orma_data:
-        input_node_name = graph.in_node_names
-        current_in_nodes.extend(input_node_name)  # includes all the input nodes with different version
-
-    max_version_no = 0
-    input_nodename_wo_version = []
-    for input_node in current_in_nodes:
-        col_name = input_node.split('.')[0]
-        input_nodename_wo_version.append(col_name)
-        if col_name in derived_columns:
-            idx = derived_columns.index(col_name)
-            # need to find the latest version of this column
-            # and replace the one in derived columns list
-            version_no = input_node.split('.')[1].split('v')[1]
-            if version_no > max_version_no:
-                max_version_no = version_no
-                derived_columns[idx] = input_node
-        else:
-            pass
-
-    # add version 0 if all columns are not in current input node names
-    for d_col in derived_columns:
-        if d_col not in input_nodename_wo_version:
-            idx_ = derived_columns.index(d_col)
-            derived_columns[idx_] = f'{d_col}.v0'
-    return derived_columns
 
 
 def merge_basename(operator):
