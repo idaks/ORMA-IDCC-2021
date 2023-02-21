@@ -148,14 +148,14 @@ def graph_op_model(nodes_list, dep_ser:pd.Series):
     # ...
     # }
     graph = {}
-    print(nodes_list) # 【3，4，5，6，7，8，9】
+    # print(nodes_list) # 【3，4，5，6，7，8，9】
     for i,op in enumerate(nodes_list):
         row = dep_ser.loc[[op]].iloc[0]
         to_nodes = list(set([val[1] for val in row]))
         for op_cur in nodes_list[i+1:]:
             row_cur = dep_ser.loc[[op_cur]].iloc[0]
             from_nodes = list(set([val[0] for val in row_cur]))
-            print(f'{op} >>> {op_cur}')
+            # print(f'{op} >>> {op_cur}')
             if list(set(from_nodes) & set(to_nodes)):
                 graph.setdefault(op, []).append(op_cur)
                 # graph.setdefault(op_cur, []).append(op)
