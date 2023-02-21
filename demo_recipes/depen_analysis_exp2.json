@@ -1,0 +1,170 @@
+[
+  {
+    "op": "core/column-removal",
+    "columnName": "Youtube",
+    "description": "Remove column Youtube"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "State",
+    "expression": "value.toLowercase()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column State using expression value.toLowercase()"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "County",
+    "expression": "value.trim()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column County using expression value.trim()"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "State",
+    "expression": "value.toTitlecase()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column State using expression value.toTitlecase()"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "city",
+    "newColumnName": "City",
+    "description": "Rename column city to City"
+  },
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "baseColumnName": "State",
+    "expression": "grel:cells.State.value + ',' + cells.City.value",
+    "onError": "set-to-blank",
+    "newColumnName": "Place",
+    "columnInsertIndex": 10,
+    "description": "Create column Place at index 10 based on column State using expression grel:cells.State.value + ',' + cells.City.value"
+  },
+  {
+    "op": "core/column-split",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "Season1Date",
+    "guessCellType": true,
+    "removeOriginalColumn": false,
+    "mode": "separator",
+    "separator": "to",
+    "regex": false,
+    "maxColumns": 0,
+    "description": "Split column Season1Date by separator"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Season1Date 1",
+    "newColumnName": "Season1Date_from",
+    "description": "Rename column Season1Date 1 to Season1Date_from"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Season1Date 2",
+    "newColumnName": "Season1Date_to",
+    "description": "Rename column Season1Date 2 to Season1Date_to"
+  },
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "baseColumnName": "Season1Date_from",
+    "expression": "jython:import re\npattern = re.compile(r'\\d{2}/\\d{2}/\\d{4}')\nif value:\n   if pattern.match(value):\n      return 1\n   else:\n      return 0\nelse:\n   return 'null'",
+    "onError": "set-to-blank",
+    "newColumnName": "valid_Season1Date_from_flag",
+    "columnInsertIndex": 14,
+    "description": "Create column valid_Season1Date_from_flag at index 14 based on column Season1Date_from using expression jython:import re\npattern = re.compile(r'\\d{2}/\\d{2}/\\d{4}')\nif value:\n   if pattern.match(value):\n      return 1\n   else:\n      return 0\nelse:\n   return 'null'"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "valid_Season1Date_from_flag",
+          "expression": "value",
+          "columnName": "valid_Season1Date_from_flag",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": 0,
+                "l": "0"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        },
+        {
+          "type": "list",
+          "name": "Season1Date_from",
+          "expression": "value",
+          "columnName": "Season1Date_from",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "Oc",
+                "l": "Oc"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "Season1Date_from",
+    "expression": "grel:cells.Season1Date.value.split(' to ')[0]",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column Season1Date_from using expression grel:cells.Season1Date.value.split(' to ')[0]"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "State",
+    "expression": "value.trim()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column State using expression value.trim()"
+  }
+]
