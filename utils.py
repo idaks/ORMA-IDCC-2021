@@ -57,14 +57,16 @@ def model_process(schemas, json_data):
     return trans_data
 
 
-def find_neighbors(nodes_list):
+def label_status_cols(nodes_list):
     # @in: [[(a,b), (a,c)], [(b,d)],...]
-    # @return: step_id, derived affected columns
+    # @return: columns with labels/status, new edges pairs, neighbors for each columns
     neighbors_of = {}
     nodes = set()
     label_nodes = []
+    label_edges = []
     visited_cols = {}
     for process in nodes_list:
+        label_edge = []
         # init_idx=0
         for edge in process:
             u = edge[0]
@@ -98,9 +100,11 @@ def find_neighbors(nodes_list):
                 label_nodes.append(label_v)
             nodes.add(u)
             nodes.add(v)
-            neighbors_of.setdefault(u, []).append(v)
-            neighbors_of.setdefault(v, []).append(u)
-    return neighbors_of, nodes, label_nodes
+            label_edge.append((label_u, label_v))
+            neighbors_of.setdefault(label_u, []).append(label_v)
+            # neighbors_of.setdefault(label_v, []).append(label_u)
+        label_edges.append(label_edge)
+    return label_edges, label_nodes, neighbors_of
 
 def check_occurrance(list_depends, val):
     flags = []
@@ -190,7 +194,7 @@ def unit_test(repair_df):
     repair_df['dependency'] = repair_df.apply(lambda row: list(product(row['from_schema'], row['to_schema'])),
                                              axis=1)
     print(repair_df['dependency'])
-    neighbors_of, nodes = find_neighbors(list(repair_df['dependency']))
+    # neighbors_of, nodes = find_neighbors(list(repair_df['dependency']))
 
 
 def dfs(graph, u):
@@ -241,9 +245,14 @@ def main1():
                11: [('State', 'State')],
                }
     ser = pd.Series(data=mydict, index=[0,1,2,3,4,5,6,7,8,9,10,11])
-    neighbors, nodes, label_nodes = find_neighbors(list(ser))
-    print(label_nodes)
-    print(len(label_nodes))
+    label_edges, label_nodes, neighbors = label_status_cols(list(ser))
+    # print(label_nodes)
+    # print(label_edges)
+    print(neighbors)
+    
+    for col in label_nodes:
+        neighbors[col] = dfs(neighbors, col)
+    print(neighbors)
 
 
 def main():
@@ -278,6 +287,7 @@ def main():
 
 
 if __name__ == '__main__':
+    # main()
     main1()
 
 
