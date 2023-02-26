@@ -1,72 +1,36 @@
 # idcc2021
 
-Workflow of using ORMA
+ORMA case study: Recipe Update problem
 
-1. Download/Clone ORMA 
+#### Description: 
+Given a chain of data transformations {op0,op1,op2,..opn}, data cleaners/curators figure out there are missing steps in between or they miused some parameters with old steps. Recipe update problem is requires to be fixed by allowing inserting new steps, or replacing the old steps with new steps at the location of errors. 
 
-     `git clone https://github.com/idaks/ORMA-IDCC-2021`
+##### Two ways of modification/update:
+- [x] Add new operation(s)
+- [x] Modify old operation(s)
 
-2. Download OpenRefine Python Client library Dependency
+Contextual Information 
+: Preconditions
+- With the help of ORMA, we could get two layers of dependency informations: 
+   > Dependency relationships at column level;
+   > Dependency relationships at step/operation level;
+- With the help of DTA (Data Transformation Algebra), we could execute how data transformations perform on the data mdoels 
+     > Dataset model:  D = (R, L, S, I, J)
+     1. R: Regular expression across the column
+     2. L: `{(data values, signature),...}`. A collection of pairs of data contents; signature: a unique identifier to descipe the location of data value. 
+     3. S: `[{data values: (row index, column index)},..]`. Structure information: for each data value,its row index and column index
+     4. I: a collection of row indices; J: a collection of column indices
 
-     `cd ORMA-IDCC-2021`
-     
-     `cd refine_pkg`
-     
-     `git clone https://github.com/LanLi2017/OpenRefineClientPy3`
+##### Challenges
+1. Use DTA to return how this transformation perform on the dataset: {*rigid transformation*, *geometric transformation*}
+> rigid transformation: only change data value at the cell level;
 
+> geometric transformation: change both data values and structure information. E.g., schema information,...
+2. Different types of transformation can be inheriant/ can influence the following graph/steps differently.
+> value level: can be connected directly
 
-3. Check your graphviz version:
-   
-   Example:
-   
-     `dot -V`
-  
-     `dot - graphviz version 2.42.3 (20191010.1750)`
-     
-      
-   If you don't have dot installed. Install the latest version Download **[Graphviz](https://www.graphviz.org/download/)**.
+> schema level: in order to replace the old nodes/steps from the original graph with the new nodes/steps, value-level matching and mapping are required. 
 
+##### Use case 1: Modify the parameters of `Split Column` transformation
+> Check the graph: demo.md[https://github.com/idaks/ORMA-IDCC-2021/blob/model-analysis/demo.md]
 
-    1). For Mac users (ex.use Homebrew):
-    
-    `$ brew install graphviz`
-    
-    
-    2). For Windows users, choose one of the methods from the **[download](https://www.graphviz.org/download/)**. website
-    
-    
-    3). For Linux users, choose one of the methods from the **[download](https://www.graphviz.org/download/)**. website
-    
-    
-4. Python Version 3.0+; Download **[Python](https://www.python.org/downloads/)**.
-   
-   `python`
-   
-   
-   `Python 3.7.8 (default, Jul 29 2020, 16:29:47)
-    [Clang 11.0.3 (clang-1103.0.32.62)] on darwin
-    Type "help", "copyright", "credits" or "license" for more information.`
-
-Change run.bash to run __main__.py (Please refer to README.md in usecase1 folder)
-
-`> python __main__.py `
-
-    usage: __main__.py [-h] [-i INPUT] [-o OUTPUT] [-t TYPE] [-c COMBINED]
-                       [-dot DOT]
-    
-    ORMA v0.0.1
-    
-    optional arguments:
-      -h, --help            show this help message and exit
-      -i INPUT, --input INPUT
-                            openrefine project ID
-      -o OUTPUT, --output OUTPUT
-                            workflow views
-      -t TYPE, --type TYPE  Workflow Views Type, Produce
-                            [table_view,schema_view,parallel_view,modular_views],
-                            Default: table_view
-      -c COMBINED, --combined COMBINED
-                        Only input when you choose Table view. [with/without
-                        Parameters] Default: False
-      -dot DOT, --dot DOT   Dot Path, if not initialized will use the dot
-                            installation environment path
