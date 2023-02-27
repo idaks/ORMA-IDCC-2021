@@ -69,8 +69,9 @@ class Dataset:
                 # pi.append(pos)
         return sorted(contents, key=lambda x: x[1]),structure
 
-    def get_regex(self,old_col, new_col):
+    def get_semantics(self,old_col, new_col):
         # sherlock?
+        #  use sherlock to return semantic data types 
         # TODO
-        
+
         pass
