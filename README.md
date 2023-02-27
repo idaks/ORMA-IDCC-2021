@@ -30,6 +30,18 @@ Contextual Information
 > value level: can be connected directly
 
 > schema level: in order to replace the old nodes/steps from the original graph with the new nodes/steps, value-level matching and mapping are required. 
+3. How to update the transformation(s)nodes from the old graph that are dependent on the **repaired**/**updated** transformation(s)?
+> DTA requires to be advanced not only cover the regular expression from syntactic level, but we should focus on data semantic types. By matching and mapping the semantic data types between **repaired**/**updated** transformation(s) and dependent nodes, we could finalize the graph merge. 
+In details: the dependent transformation(s)/nodes will be updated correspondingly
+> Advanced Dataset model:  `D = (R, L, S, I, J, T)` (T: semantic data types) 
+
+#### Methods
+1. Use OpenRefine Python Client Library[https://github.com/LanLi2017/OpenRefineClientPy3] to connect with OpenRefine server. Through undo/redo, we could get internal data products/ dataset versions during the data cleaning process. 
+2. Data model developed by DTA (Data Transformation Algebra) from paper "A first-principles algebraic approach to data transformations in data cleaning: understanding provenance from the ground up"[https://www.usenix.org/system/files/tapp2020-paper-nunez-corrales.pdf]. 
+`cited as {Núnez-Corrales, S., Li, L., & Ludäscher, B. (2020, June). A first-principles algebraic approach to data transformations in data cleaning: understanding provenance from the ground up. In Proceedings of the 12th USENIX Conference on Theory and Practice of Provenance (pp. 3-3).}`
+3. Advanced data model based on DTA by providing semantic data types supported by Sherlock: "Sherlock
+A Deep Learning Approach to Semantic Data Type Detection"[https://github.com/mitmedialab/sherlock-project].
+`cited as {Madelon Hulsebos, Kevin Hu, Michiel Bakker, Emanuel Zgraggen, Arvind Satyanarayan, Tim Kraska, Çağatay Demiralp, and César Hidalgo. 2019. Sherlock: A Deep Learning Approach to Semantic Data Type Detection. In The 25th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD ’19), August 4–8, 2019, Anchorage, AK, USA. ACM, New York, NY, USA, 9 pages. https://doi.org/10.1145/3292500.3330993}`
 
 ##### Use case 1: Modify the parameters of `Split Column` transformation
 > Check the graph: demo.md[https://github.com/idaks/ORMA-IDCC-2021/blob/model-analysis/demo.md]
