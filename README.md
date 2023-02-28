@@ -32,7 +32,8 @@ Given a chain of data transformations {op0,op1,op2,..opn}, data cleaners/curator
 > schema level: in order to replace the old nodes/steps from the original graph with the new nodes/steps, value-level matching and mapping are required. 
 3. How to update the transformation(s)nodes from the old graph that are dependent on the **repaired**/**updated** transformation(s)?
 > DTA requires to be advanced not only cover the regular expression from syntactic level, but we should focus on data semantic types. By matching and mapping the semantic data types between **repaired**/**updated** transformation(s) and dependent nodes, we could finalize the graph merge. 
-In details: the dependent transformation(s)/nodes will be updated correspondingly
+In details: the dependent transformation(s)/nodes will be updated correspondingly.
+
 > Advanced Dataset model:  `D = (R, L, S, I, J, T)` (T: semantic data types) 
 
 #### Methods
@@ -48,12 +49,14 @@ Return the affected derived steps.
 Through *undo/redo*, we could get internal data products/ dataset versions during the data cleaning process. 
 
 3. Data model developed by DTA (Data Transformation Algebra) from [paper](https://www.usenix.org/system/files/tapp2020-paper-nunez-corrales.pdf) "A first-principles algebraic approach to data transformations in data cleaning: understanding provenance from the ground up". 
+
 `cited as {Núnez-Corrales, S., Li, L., & Ludäscher, B. (2020, June). A first-principles algebraic approach to data transformations in data cleaning: understanding provenance from the ground up. In Proceedings of the 12th USENIX Conference on Theory and Practice of Provenance (pp. 3-3).}`
 
 According to the difference between data versions and how they reflect on the data model from DTA, return the category of repaired transformation(s):
 - value level
 - schema level 
 4. Advanced data model based on DTA by providing semantic data types supported by [Sherlock](https://github.com/mitmedialab/sherlock-project): "Sherlock A Deep Learning Approach to Semantic Data Type Detection".
+
 `cited as {Madelon Hulsebos, Kevin Hu, Michiel Bakker, Emanuel Zgraggen, Arvind Satyanarayan, Tim Kraska, Çağatay Demiralp, and César Hidalgo. 2019. Sherlock: A Deep Learning Approach to Semantic Data Type Detection. In The 25th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD ’19), August 4–8, 2019, Anchorage, AK, USA. ACM, New York, NY, USA, 9 pages. https://doi.org/10.1145/3292500.3330993}`
 
 According to the Sherlock predicted results, match the old derived step(s) and new step(s); Update the old derived step(s).
