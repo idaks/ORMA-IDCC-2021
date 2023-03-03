@@ -1,6 +1,6 @@
 ```mermaid
 
-graph LR
+graph TD 
    col0(Youtube) --> id0[step 0]
    id0 --> col1(Null);
    style col0 fill:#ffd
@@ -89,5 +89,19 @@ graph LR
 
    col19 -. matching&replace.->col11
    col20 -. matching&replace.->col12
+
+   id0 -.-> id1
+   id1 -.-> id2
+   id2 -.-> id3
+   id3 -.-> id4
+   id4 -.-> id5
+   id5 -.-> id6
+   id6 -.-> id7
+   id7 -.-> id8
+   id8 -.-> id9
+   id9 -.-> id10
+   id10 -.-> id11
+   id11 -.-> id12
+
    
 ```
