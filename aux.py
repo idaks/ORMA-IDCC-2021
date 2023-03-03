@@ -10,12 +10,17 @@ project_id = 2594128575948
 from DTA.dataset import Dataset
 ds = Dataset(project_id=project_id)
 df= ds.read_ds()
-print(df)
+# print(df)
 ds.get_index()
 row_I = ds.row_I
 col_J = ds.column_J
-print(row_I)
-print(col_J)
+# print(row_I)
+# print(col_J)
 contents, structure = ds.get_model()
-print(contents)
-print(structure)
+# print(contents)
+# print(structure)
+from run_sherlock import SherlockDKInjector
+sherlock_dk = SherlockDKInjector()
+# sherlock_dk.initialize()
+res = sherlock_dk.exe_labels()
+print(res)

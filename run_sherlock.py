@@ -27,7 +27,7 @@ class SherlockDKInjector():
         initialise_word_embeddings()
         initialise_pretrained_model(400) # 400 => dimension 
         initialise_nltk()
-        # print("sherlock loaded...")  # check how much memory it takes up... --> 14312 MiB
+        print("sherlock loaded...")  # check how much memory it takes up... --> 14312 MiB
         # time.sleep(10)
 
     def exe_labels(self, col_values_list=None,temp_f='Features/temporary_1.csv'):
@@ -54,7 +54,7 @@ class SherlockDKInjector():
         feature_vectors = pd.read_csv(temp_f, dtype=np.float32)
         print(feature_vectors)
         # init sherlock
-        # self.model = SherlockModel()
-        # self.model.initialize_model_from_json(with_weights=True, model_id="sherlock")
-        # predicted_labels = self.model.predict(feature_vectors, "sherlock")
-        # return predicted_labels
+        self.model = SherlockModel()
+        self.model.initialize_model_from_json(with_weights=True, model_id="sherlock")
+        predicted_labels = self.model.predict(feature_vectors, "sherlock")
+        return predicted_labels
