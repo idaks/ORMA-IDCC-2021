@@ -40,9 +40,7 @@ class SherlockDKInjector():
         # data = pd.Series([col_values_list], name='values')
         data = pd.Series(
             [
-                ["Jane Smith", "Lute Ahorn", "Anna James"],
-                ["Amsterdam", "Haarlem", "Zwolle"],
-                ["Chabot Street 19", "1200 fifth Avenue", "Binnenkant 22, 1011BH"]
+                col_values_list
             ],
             name="values"
         )
@@ -52,7 +50,6 @@ class SherlockDKInjector():
             data
         )
         feature_vectors = pd.read_csv(temp_f, dtype=np.float32)
-        print(feature_vectors)
         # init sherlock
         self.model = SherlockModel()
         self.model.initialize_model_from_json(with_weights=True, model_id="sherlock")

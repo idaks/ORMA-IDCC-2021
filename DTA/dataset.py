@@ -59,9 +59,7 @@ class Dataset:
         for value in self.df.itertuples():
             row_id = value[0]
             element = value[1:]
-            print(f'row {row_id}: value>>> {element}')
             for i, e in enumerate(element):
-                print(f'column index: {i} >>>> data value:{e}')
                 pos = (row_id, i)  # coordinates of cell
                 signature = pow(2, row_id) * pow(3, i)
                 contents.add((e, signature))
@@ -69,9 +67,15 @@ class Dataset:
                 # pi.append(pos)
         return sorted(contents, key=lambda x: x[1]),structure
 
-    def get_semantics(self,old_col, new_col):
+    def get_semantics(self,col_name):
         # sherlock?
         #  use sherlock to return semantic data types 
-        # TODO
-
-        pass
+        from run_sherlock import SherlockDKInjector
+        sherlock_dk = SherlockDKInjector()
+        print(self.df[col_name])
+        # exp_col = ['New York', 'Champaign', 'Jersey City', 'Chicago', 'Brooklyn', '[Montreal',
+        #             'Empress China', 'Beijing,China', '(Shanghai,']
+        col_labels = sherlock_dk.exe_labels(col_values_list=list(self.df[col_name]))
+        # col_labels = sherlock_dk.exe_labels(col_values_list=exp_col)
+        print(col_labels)
+        return col_labels 
