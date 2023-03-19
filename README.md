@@ -6,8 +6,11 @@ ORMA case study: Recipe Update problem
 Given a chain of data transformations {op0,op1,op2,..opn}, data cleaners/curators figure out there are missing steps in between or they miused some parameters with old steps. Recipe update problem is requires to be fixed by allowing inserting new steps, or replacing the old steps with new steps at the location of errors. 
 
 #### Two ways of modification/update:
-- [x] Add new operation(s)
+- [x] Add new operation(s), extra operation working on ``old columns`` (existing columns).
 - [x] Modify old operation(s)
+- - [x] Modify parameters 
+- - [x] delete old operation(s)
+> Assumption I: neither of two ways of modification will work on ``new columns``. (i.p., ``new columns`` stand for columns that has no dependent/descendent columns) Because in this case, the operation can be appended at the end of the recipe always. 
 
 #### Contextual Information/Precondition:
 

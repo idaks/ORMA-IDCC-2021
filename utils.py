@@ -1,15 +1,44 @@
 from itertools import product
 import re
 import pandas as pd
+import json 
 
 
-def add_filter(operator):
-    facets = operator['engineConfig']
-    if facets:
-        selection = 0
-        pass
-    else:
-        pass
+def depend_col(df):
+    # @params json_data: recipe data in JSON format 
+    # @params df: process data model in pandas dataframe 
+    # @return: dictionary of dependency relationships at Column Level 
+    row_count = df.shape[0]
+    df['dependency'] = df.apply(lambda row: list(product(row['from_schema'], row['to_schema'])),
+                                             axis=1)
+    dep_col = df['dependency']
+    col_list = list(dep_col)
+    label_edges, label_nodes, neighbors = label_status_cols(col_list)
+    from_node_label = add_col_labels(label_edges)
+    to_node_label = add_col_labels(label_edges, from_=False)
+    assert len(from_node_label) == row_count and len(to_node_label) == row_count
+    df['from_schema_label'] = from_node_label
+    df['to_schema_label'] = to_node_label
+    for col in label_nodes:
+        neighbors[col] = dfs(neighbors, col)
+    return neighbors,df
+
+
+def depend_step(df):
+    # @params json_data: recipe data in JSON format 
+    # @params df: process data model in pandas dataframe 
+    # @return: dictionary of dependency relationships at Step Level
+    df['dependency'] = df.apply(lambda row: list(product(row['from_schema'], row['to_schema'])),
+                                             axis=1)
+    dep_col = df['dependency']
+    print(dep_col)
+    steps_list = list(dep_col.index)
+    graph_steps = graph_op_model(steps_list, dep_col)
+    
+    for step in steps_list:
+        graph_steps[step] = list(set(dfs(graph_steps, step)))
+    return graph_steps   
+
 
 # save data into triples (step_id, transformation, from_schema, to_schema)
 def model_process(schemas, json_data):
@@ -106,86 +135,64 @@ def label_status_cols(nodes_list):
         label_edges.append(label_edge)
     return label_edges, label_nodes, neighbors_of
 
-def check_occurrance(list_depends, val):
-    flags = []
-    for dep in list_depends:
-        flag = []
-        for pairs in dep:
-            if val in pairs:
-                flag.append(True)
-                break
-            else:
-                flag.append(False)
-        flags.append(any(flag))
-    return flags
 
-
-def depend_on_step(dict_cols_neigh, depend_ser:pd.Series):
-    # Input dictionary of neighbors for column names, return corresponding step ids
-    # @params dict_cols_neigh: {'State': ['State', 'State', 'Place'],...'...': ['Season1Date_from']}
-    # @params depend_ser: dependency column from pandas table  
-    # @return dict_ops_neigh: {3: [3,5]...} dependency information on operation/step level 
-    dict_ops_nei = {}
-    list_depends = list(depend_ser)
-    for k,v in dict_cols_neigh.items():
-        v_neigh = []
-        occurrances = check_occurrance(list_depends, k) # return [False, True,...]
-        for val in v:
-            val_occur = check_occurrance(list_depends, val)
-            val_T_occur = [id for id,x in enumerate(val_occur) if x is True]
-            val_steps_occur = [depend_ser.index[x] for x in val_T_occur] 
-            v_neigh.extend(val_steps_occur)
-        T_occur = [id for id,x in enumerate(occurrances) if x is True]
-        steps_occur = [depend_ser.index[x] for x in T_occur]
-        k_id = steps_occur[0]         # the first occurrance step id as the key
-        dict_ops_nei[k_id] = list(set(v_neigh))
-    return dict_ops_nei
+def add_col_labels(label_edges, from_=True):
+    # [[('Youtube_0', 'null')],...,[('State_2', 'State_3')]]
+    labels = []
+    for label_edge in label_edges:
+        if from_:
+            node_label = list(set(from_node[0] for from_node in label_edge))
+        else:
+            node_label = list(set(from_node[1] for from_node in label_edge))
+        labels.append(node_label)
+    return labels
 
 
 def extract_col(operator):
     # This function is to return column node from the transformation
     # => determine the potential affected transformations and column nodes
-    if 'op' not in operator:
+    op_json = json.loads(operator)
+    if 'op' not in op_json:
         print('This is not a operation')
         pass
     else:
-        if operator['op'] == 'core/column-addition':  # merge operation
-            exp = operator['expression']
+        if op_json['op'] == 'core/column-addition':  # merge operation
+            exp = op_json['expression']
             if exp.split(':')[0] == 'grel':
                 if re.findall(r'cells.(\w+).value', exp):
                     col = re.findall(r'cells.(\w+).value', exp)
                 elif re.findall(r'cells\[\"(\w+\s*\d*\w*)\"\]\.value', exp):
                     col = re.findall(r'cells\[\"(\w+\s*\d*\w*)\"\]\.value', exp)
                 else:
-                    col = operator['baseColumnName']
+                    col = op_json['baseColumnName']
             else:
-                col = operator['baseColumnName'] 
+                col = op_json['baseColumnName'] 
 
-        elif operator['op'] == 'core/column-split':  # split operation
-            col = operator["columnName"] 
-        elif operator['op'] == 'core/column-rename':  # split operation
-            col = operator["oldColumnName"]
-        elif operator['op'] == 'core/column-removal':
-            col = operator["columnName"]
-        elif operator['op'] == 'core/column-addition-by-fetching-urls':
-            col = operator['baseColumnName']
-        # elif operator['op'] == 'core/multivalued-cell-join':
-        #     col = operator["columName"]
-        elif operator['op'] == 'core/transpose-columns-into-rows':
-            col = operator["startColumnName"]
-        # elif operator['op'] == 'core/row-removal':
-        #     colname = operator["engineConfig"]["facets"][0]["columnName"]
-        # elif operator['op'] == 'core/column-move':
-        #     col = operator["columnName"]
-        elif operator['op'] == 'core/mass-edit':
-            col = operator["columnName"]
-        # elif operator['op'] == 'core/multivalued-cell-split':
-        #     col = operator["columnName"]
-        elif operator['op'] == 'core/recon':
-            col = operator['columnName']
+        elif op_json['op'] == 'core/column-split':  # split operation
+            col = op_json["columnName"] 
+        elif op_json['op'] == 'core/column-rename':  # split operation
+            col = op_json["oldColumnName"]
+        elif op_json['op'] == 'core/column-removal':
+            col = op_json["columnName"]
+        elif op_json['op'] == 'core/column-addition-by-fetching-urls':
+            col = op_json['baseColumnName']
+        # elif op_json['op'] == 'core/multivalued-cell-join':
+        #     col = op_json["columName"]
+        elif op_json['op'] == 'core/transpose-columns-into-rows':
+            col = op_json["startColumnName"]
+        # elif op_json['op'] == 'core/row-removal':
+        #     colname = op_json["engineConfig"]["facets"][0]["columnName"]
+        # elif op_json['op'] == 'core/column-move':
+        #     col = op_json["columnName"]
+        elif op_json['op'] == 'core/mass-edit':
+            col = op_json["columnName"]
+        # elif op_json['op'] == 'core/multivalued-cell-split':
+        #     col = op_json["columnName"]
+        elif op_json['op'] == 'core/recon':
+            col = op_json['columnName']
         else:  # normal unary operation
             try:
-                col = operator['columnName']
+                col = op_json['columnName']
             except KeyError:
                 pass
         return col 
@@ -229,6 +236,50 @@ def graph_op_model(nodes_list, dep_ser:pd.Series):
                 # graph.setdefault(op_cur, []).append(op)
     return graph
 
+
+def find_status(df, step_id, col):
+    df_sub = df.head(step_id-1)
+    to_schema_labels = []
+    for row in df_sub[::-1].itertuples():
+        if col in row.to_schema:
+            to_schema_labels = row.to_schema_label
+            return to_schema_labels
+
+
+def return_dep_stepid(cols, df):
+    stepid_list = []
+    for col in cols:
+        query_res = df[df.apply(lambda x: col in x.from_schema_label, axis=1)].step_id
+        stepid_list.extend(query_res.tolist())
+    return list(set(stepid_list))
+
+
+def exe_descendants(df, dep_steps,dep_cols,mode="insert", operator=None, step_id=0):
+    # @params dep_steps: dict of dependency relationships at step level
+    # @params dep_cols: dict of dependency relationships at column level  
+    # @params mode: ["modify", "delete", "insert"]
+    # @params operator: dict of operation
+    # @params step_id: row index of modified/inserted step
+    # @return: affected steps list [step_id, step_id0,...], columns list [col, col_0,...]
+    # Compute the affected column(s) & steps 
+    col_repair = extract_col(operator) # column name without status 
+    to_schema_labels = find_status(df, step_id, col_repair)
+    pattern = rf'{col_repair}_\d+'
+    prog = re.compile(pattern)
+    for to_schema in to_schema_labels:
+        if prog.match(to_schema):
+            col_repair_label = to_schema
+    is_exist = any((col_repair_label in i) for i in dep_cols.values())
+    assert is_exist is True
+    cols = dep_cols[col_repair_label] # a list of dependent columns
+    if mode == 'insert':
+        # all subsequent step id increase 1
+        steps = return_dep_stepid(cols, df)
+    else:
+        # step ids do not change 
+        # 1: change parameters; 2: delete operations
+        steps = dep_steps[step_id]
+    return steps, cols
 
 def main1():
     mydict = { 0: [('Youtube', 'null')], 
