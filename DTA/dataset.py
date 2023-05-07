@@ -15,11 +15,6 @@ class Dataset:
 
     def __init__(self, file_path=None, project_id=None):
         self.fp = file_path
-        # self.df = None
-        # self.row_I = []
-        # self.column_J = []
-        # self.content = dict()
-        # self.Structure = []
         if project_id:
             self.or_server = refine.RefineProject(refine.RefineServer(), project_id) 
 
@@ -42,14 +37,14 @@ class Dataset:
             col_schema = ds_dict[0]
             self.df = pd.DataFrame(ds_dict[1:])
             self.df.columns = col_schema
-            return self.df
-
+        # return self.df
 
     def get_index(self):
         row_length = self.df.shape[0]
         column_length = self.df.shape[1]
         self.row_I = list(range(row_length))
         self.column_J = list(range(column_length))
+        return self.row_I, self.column_J
 
     def get_model(self):
         # signature = 0  # lambda = pow(2,i)* pow(3,j); i:row index, j: column index

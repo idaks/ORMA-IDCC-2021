@@ -1,6 +1,6 @@
 # idcc2021
 
-ORMA case study: Recipe Update problem
+ORMA case study: [Recipe Update problem](https://docs.google.com/presentation/d/1kU2fi2GdsZSeDhxHdgv2W4mKeJD-vvfnej0PenwcX04/edit?usp=sharing)
 
 #### Description: 
 Given a chain of data transformations {op0,op1,op2,..opn}, data cleaners/curators figure out there are missing steps in between or they miused some parameters with old steps. Recipe update problem is requires to be fixed by allowing inserting new steps, or replacing the old steps with new steps at the location of errors. 

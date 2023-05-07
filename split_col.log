@@ -1,0 +1,259 @@
+2023-05-07 13:27:52,391 - INFO - Append rows:             0   1
+0     Chicago  IL
+1     Seattle  WA
+2  Evansville  IN
+3      Denver  CO
+4     Hampton  VA
+2023-05-07 13:27:52,393 - INFO - Using separator `,`,
+ Failed percentage: 50.0...
+2023-05-07 13:27:52,394 - INFO - Failed dataframe:            Location
+5       New York;NY
+6         Newark;NJ
+7       San Jose;CA
+8       Portland;OR
+9  Overland Park;KS
+2023-05-07 13:27:52,395 - INFO - Append rows:                0   1
+5       New York  NY
+6         Newark  NJ
+7       San Jose  CA
+8       Portland  OR
+9  Overland Park  KS
+2023-05-07 13:27:52,397 - INFO - Using separator `;`,
+ Failed percentage: 0.0...
+2023-05-07 13:27:52,397 - INFO - Failed dataframe: Empty DataFrame
+Columns: [Location]
+Index: []
+2023-05-07 13:29:00,548 - INFO - Append rows:             0   1
+0     Chicago  IL
+1     Seattle  WA
+2  Evansville  IN
+3      Denver  CO
+4     Hampton  VA
+2023-05-07 13:29:00,551 - INFO - Using separator `,`,
+ Failed percentage: 50.0...
+2023-05-07 13:29:00,552 - INFO - Failed dataframe:            Location
+5       New York;NY
+6         Newark;NJ
+7       San Jose;CA
+8       Portland;OR
+9  Overland Park;KS
+2023-05-07 13:29:00,554 - INFO - Append rows:                0   1
+5       New York  NY
+6         Newark  NJ
+7       San Jose  CA
+8       Portland  OR
+9  Overland Park  KS
+2023-05-07 13:29:00,555 - INFO - Using separator `;`,
+ Failed percentage: 0.0...
+2023-05-07 13:29:00,556 - INFO - Failed dataframe: Empty DataFrame
+Columns: [Location]
+Index: []
+2023-05-07 13:29:22,826 - INFO - Append rows:             0   1
+0     Chicago  IL
+1     Seattle  WA
+2  Evansville  IN
+3      Denver  CO
+4     Hampton  VA
+2023-05-07 13:29:22,828 - INFO - Using separator `,`,
+ Failed percentage: 50.0...
+2023-05-07 13:29:22,829 - INFO - Failed dataframe:            Location
+5       New York;NY
+6         Newark;NJ
+7       San Jose;CA
+8       Portland;OR
+9  Overland Park;KS
+2023-05-07 13:29:22,832 - INFO - Append rows:                0   1
+5       New York  NY
+6         Newark  NJ
+7       San Jose  CA
+8       Portland  OR
+9  Overland Park  KS
+2023-05-07 13:29:22,834 - INFO - Using separator `;`,
+ Failed percentage: 0.0...
+2023-05-07 13:29:22,834 - INFO - Failed dataframe: Empty DataFrame
+Columns: [Location]
+Index: []
+2023-05-07 13:30:37,526 - INFO - Append rows:             0   1
+0     Chicago  IL
+1     Seattle  WA
+2  Evansville  IN
+3      Denver  CO
+4     Hampton  VA
+2023-05-07 13:30:37,529 - INFO - Using separator `,`,
+ Failed percentage: 50.0...
+2023-05-07 13:30:37,530 - INFO - Failed dataframe:            Location
+5       New York;NY
+6         Newark;NJ
+7       San Jose;CA
+8       Portland;OR
+9  Overland Park;KS
+2023-05-07 13:30:37,531 - INFO - Current Dataframe Using Separator ,: 
+                          Location           0   1
+0      NaN     Chicago  IL
+1      NaN     Seattle  WA
+2      NaN  Evansville  IN
+3      NaN      Denver  CO
+4      NaN     Hampton  VA
+2023-05-07 13:30:37,532 - INFO - Append rows:                0   1
+5       New York  NY
+6         Newark  NJ
+7       San Jose  CA
+8       Portland  OR
+9  Overland Park  KS
+2023-05-07 13:30:37,534 - INFO - Using separator `;`,
+ Failed percentage: 0.0...
+2023-05-07 13:30:37,534 - INFO - Failed dataframe: Empty DataFrame
+Columns: [Location]
+Index: []
+2023-05-07 13:30:37,536 - INFO - Current Dataframe Using Separator ;: 
+                          Location              0   1
+0      NaN        Chicago  IL
+1      NaN        Seattle  WA
+2      NaN     Evansville  IN
+3      NaN         Denver  CO
+4      NaN        Hampton  VA
+5      NaN       New York  NY
+6      NaN         Newark  NJ
+7      NaN       San Jose  CA
+8      NaN       Portland  OR
+9      NaN  Overland Park  KS
+2023-05-07 13:38:24,521 - INFO - Append rows:             0   1
+0     Chicago  IL
+1     Seattle  WA
+2  Evansville  IN
+3      Denver  CO
+4     Hampton  VA
+2023-05-07 13:38:24,524 - INFO - Using separator `,`,
+ Failed percentage: 50.0...
+2023-05-07 13:38:24,525 - INFO - Failed dataframe:            Location
+5       New York;NY
+6         Newark;NJ
+7       San Jose;CA
+8       Portland;OR
+9  Overland Park;KS
+2023-05-07 13:38:24,526 - INFO - Current Dataframe Using Separator ,: 
+                                Location           0   1
+0     Chicago,IL     Chicago  IL
+1     Seattle,WA     Seattle  WA
+2  Evansville,IN  Evansville  IN
+3      Denver,CO      Denver  CO
+4     Hampton,VA     Hampton  VA
+2023-05-07 13:38:24,528 - INFO - Append rows:                0   1
+5       New York  NY
+6         Newark  NJ
+7       San Jose  CA
+8       Portland  OR
+9  Overland Park  KS
+2023-05-07 13:38:24,530 - INFO - Using separator `;`,
+ Failed percentage: 0.0...
+2023-05-07 13:38:24,530 - INFO - Failed dataframe: Empty DataFrame
+Columns: [Location]
+Index: []
+2023-05-07 13:38:24,531 - INFO - Current Dataframe Using Separator ;: 
+                                   Location              0   1
+5       New York;NY       New York  NY
+6         Newark;NJ         Newark  NJ
+7       San Jose;CA       San Jose  CA
+8       Portland;OR       Portland  OR
+9  Overland Park;KS  Overland Park  KS
+2023-05-07 13:41:54,082 - INFO - Append rows:             0   1
+0     Chicago  IL
+1     Seattle  WA
+2  Evansville  IN
+3      Denver  CO
+4     Hampton  VA
+2023-05-07 13:41:54,084 - INFO - Using separator `,`,
+ Failed percentage: 50.0...
+2023-05-07 13:41:54,084 - INFO - Failed dataframe:            Location
+5       New York;NY
+6         Newark;NJ
+7       San Jose;CA
+8       Portland;OR
+9  Overland Park;KS
+2023-05-07 13:41:54,085 - INFO - Current Dataframe Using Separator ,: 
+                                    0   1
+0     Chicago  IL
+1     Seattle  WA
+2  Evansville  IN
+3      Denver  CO
+4     Hampton  VA
+2023-05-07 13:41:54,087 - INFO - Append rows:                0   1
+5       New York  NY
+6         Newark  NJ
+7       San Jose  CA
+8       Portland  OR
+9  Overland Park  KS
+2023-05-07 13:41:54,088 - INFO - Using separator `;`,
+ Failed percentage: 0.0...
+2023-05-07 13:41:54,088 - INFO - Failed dataframe: Empty DataFrame
+Columns: [Location]
+Index: []
+2023-05-07 13:41:54,089 - INFO - Current Dataframe Using Separator ;: 
+                                       0   1
+0        Chicago  IL
+1        Seattle  WA
+2     Evansville  IN
+3         Denver  CO
+4        Hampton  VA
+5       New York  NY
+6         Newark  NJ
+7       San Jose  CA
+8       Portland  OR
+9  Overland Park  KS
+2023-05-07 13:43:34,878 - INFO - Append rows:             0   1
+0     Chicago  IL
+1     Seattle  WA
+2  Evansville  IN
+3      Denver  CO
+4     Hampton  VA
+2023-05-07 13:43:34,879 - INFO - Using separator `,`,
+ Failed percentage: 50.0...
+2023-05-07 13:43:34,880 - INFO - Failed dataframe:            Location
+5       New York;NY
+6         Newark;NJ
+7       San Jose;CA
+8       Portland;OR
+9  Overland Park;KS
+2023-05-07 13:43:34,881 - INFO - Current Dataframe Using Separator ,: 
+                                    0   1
+0     Chicago  IL
+1     Seattle  WA
+2  Evansville  IN
+3      Denver  CO
+4     Hampton  VA
+2023-05-07 13:43:34,882 - INFO - Append rows:                0   1
+5       New York  NY
+6         Newark  NJ
+7       San Jose  CA
+8       Portland  OR
+9  Overland Park  KS
+2023-05-07 13:43:34,883 - INFO - Using separator `;`,
+ Failed percentage: 0.0...
+2023-05-07 13:43:34,884 - INFO - Failed dataframe: Empty DataFrame
+Columns: [Location]
+Index: []
+2023-05-07 13:43:34,885 - INFO - Current Dataframe Using Separator ;: 
+                                       0   1
+0        Chicago  IL
+1        Seattle  WA
+2     Evansville  IN
+3         Denver  CO
+4        Hampton  VA
+5       New York  NY
+6         Newark  NJ
+7       San Jose  CA
+8       Portland  OR
+9  Overland Park  KS
+2023-05-07 13:43:34,885 - INFO - Rows appended sucessfully.
+2023-05-07 13:43:34,886 - INFO - Resulting DataFrame By Method 2:
+           Location              0   1
+0        Chicago,IL        Chicago  IL
+1        Seattle,WA        Seattle  WA
+2     Evansville,IN     Evansville  IN
+3         Denver,CO         Denver  CO
+4        Hampton,VA        Hampton  VA
+5       New York;NY       New York  NY
+6         Newark;NJ         Newark  NJ
+7       San Jose;CA       San Jose  CA
+8       Portland;OR       Portland  OR
+9  Overland Park;KS  Overland Park  KS

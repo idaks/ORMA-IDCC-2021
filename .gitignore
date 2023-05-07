@@ -1,0 +1,6 @@
+sherlock_project/*
+__pycache__/*
+DTA/__pycache__/*
+refine_pkg/__pycache__/*
+refine_pkg/OpenRefineClientPy3
+.vscode/launch.json

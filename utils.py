@@ -2,6 +2,88 @@ from itertools import product
 import re
 import pandas as pd
 import json 
+from DTA.dataset import Dataset
+from refine_pkg.OpenRefineClientPy3.google_refine.refine import refine
+
+
+def oh_map_history(op):
+    '''
+        operation history from data.txt
+        => include a complete record (single-edit; star/flag rows)
+    '''
+    oh_list = op.get_operations()
+
+    '''
+        history list: 
+        history id; time stamp; description [retrospective provenance]
+    '''
+    histories = op.list_history()  # history id/ time/ desc
+    past_histories = histories['past']
+
+    assert len(oh_list) == len(past_histories)
+    map_result = [
+        {**oh, **history}
+        for oh, history in zip(oh_list, past_histories)
+    ]
+    # description will be overwrite with retrospective info from history list.
+    return oh_list, past_histories, map_result
+
+
+def run_DTA(project_id, col_name):
+    # run DTA on each status, return data model 
+    # assumption: operation work on column level
+    '''
+    @params project_id: project id
+    @params col_name: column name
+    '''
+    ds = Dataset(project_id=project_id)
+    ds.read_ds()
+    row_I, col_J = ds.get_index()
+    contents, structure = ds.get_model()
+    labels = ds.get_semantics(col_name=col_name)
+    return (labels, contents, structure, row_I, col_J)
+  
+def exe_dm_delta(prev_dm, cur_dm):
+    # Given two data model by DTA; compute the difference
+    # Categorize the delta types: [value-level; schema-level]
+    
+    pass
+
+
+def get_delta_type(step_ids, project_id=1689182305388, recipe='demo_recipes/depen_analysis_exp2.json'): 
+    # This function to 
+    # 1. execute the changes by the given operation
+    # 2. run DTA to check how changes affect dataset 
+    """
+    @params step_ids: list of descendant columns 
+    @params project_id: project id
+    @params recipe: json file 
+    """
+    res = {}
+    or_server = refine.RefineProject(refine.RefineServer(), project_id) # load openrefine project 
+    or_server.undo_redo_project(0) # initialize project status 
+    or_server.apply_operations(recipe)
+    _, _, map_result = oh_map_history(or_server)
+    for op_idx,op_dict in enumerate(1,map_result):
+        col_name = extract_col(op_dict)
+        if op_idx in step_ids:
+            prev_idx = op_idx-1
+            if prev_idx <0:
+                assert prev_idx == -1
+                # in this case, previous status is the clean dataset 
+                prev_history_id = 0  
+            else:
+                prev_history_id = map_result[prev_idx]['id']
+            cur_history_id = op_dict['id']
+            or_server.undo_redo_project(prev_history_id)
+            #TODO: DTA should run on old outputs (by old operator) and 
+            # new outputs (after editing the old operator)
+            prev_dm = run_DTA(project_id=project_id, col_name=col_name)
+            or_server.undo_redo_project(cur_history_id)
+            cur_dm = run_DTA(project_id=project_id, col_name=col_name)
+            delta_type = exe_dm_delta(prev_dm, cur_dm)
+            res[op_idx] = delta_type    
+    return res
 
 
 def depend_col(df):
@@ -151,10 +233,14 @@ def add_col_labels(label_edges, from_=True):
 def extract_col(operator):
     # This function is to return column node from the transformation
     # => determine the potential affected transformations and column nodes
-    op_json = json.loads(operator)
+    if isinstance(operator, str):
+        op_json = json.loads(operator)
+    else:
+        op_json = operator
     if 'op' not in op_json:
         print('This is not a operation')
-        pass
+        # value-level changes can be automatically merged
+        col = False
     else:
         if op_json['op'] == 'core/column-addition':  # merge operation
             exp = op_json['expression']
@@ -194,7 +280,7 @@ def extract_col(operator):
             try:
                 col = op_json['columnName']
             except KeyError:
-                pass
+                col = False
         return col 
 
 def unit_test(repair_df):
