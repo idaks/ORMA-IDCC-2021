@@ -38,9 +38,12 @@ def split_adv1(sep, col_name, df:pd.DataFrame, thread=0.2):
 # Method 2: continue trying separators to split
 def split_adv2(sep, col_name, df:pd.DataFrame):
     df_new = df[col_name].str.split(sep, expand=True)
-    # Filter the rows that contain missing values
-    failed_idx = df_new[df_new.isnull().any(axis=1)].index.tolist()
-    correct_df = df_new[~df_new.isnull().any(axis=1)]
+    print(df_new)
+    # failed index: rows that are not splitted by current separator sucessfully
+    #@TODO: not consider mixed type for now
+    failed_idx = df.index[df[col_name] == df_new[0]].tolist()
+    # failed_idx = df_new[df_new.isnull().any(axis=1)].index.tolist()
+    correct_df = df_new.drop(failed_idx, axis=0)
     #TODO： should be more strict: check if non-word characters existing here?
     logging.info(f'Append rows: {correct_df}')
 
@@ -53,7 +56,7 @@ def main():
     col_name = 'Location' 
     data = {'Location': ['Chicago,IL', 'Seattle,WA', 'Evansville,IN', 'Denver,CO',
                         'Hampton,VA', 'New York;NY', 'Newark;NJ', 'San Jose;CA', 
-                        'Portland;OR', 'Overland Park;KS']
+                        'Portland;OR', 'Overland Park;KS', 'Champaign.IL']
             }
     df = pd.DataFrame(data)
     df_cp = df.copy()
@@ -73,10 +76,9 @@ def main():
                         {df_clean_m2}')
     if not df_cp.empty:
         num_rows_left = df_cp.shape[0]
-        logging.info(f'There are still {num_rows_left} rows left that \
-                        cannot be resolved by current available separators.')
+        logging.info(f'There are still {num_rows_left} rows left that cannot be resolved by current available separators.')
         logging.info(f'Failed dataframe: {df_cp}')
-        df_clean_m2 = df_clean_m2.append(df_cp, ignore_index=True)
+        # df_clean_m2 = pd.merge(df_clean_m2, df_cp, on=col_name, how='outer')
     
     combined_df = pd.concat([df, df_clean_m2], axis=1)
     logging.info('Rows appended sucessfully.')
